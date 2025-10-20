@@ -28,6 +28,10 @@
                         <input type="url" name="dropdowns[0][link]" class="form-control"
                             placeholder="Enter dropdown link">
                     </div>
+                    <div class="mb-3">
+                        <label for="dropdown_icon_dropdown" class="form-label">Dropdown Icon (Image)</label>
+                        <input type="file" name="dropdowns[0][icon_dropdown]" class="form-control" accept="image/*">
+                    </div>
                 </div>
             </div>
 
@@ -52,6 +56,10 @@
                     <div class="mb-3">
                         <label for="dropdown_link" class="form-label">Dropdown Link</label>
                         <input type="url" name="dropdowns[${dropdownIndex}][link]" class="form-control" placeholder="Enter dropdown link" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dropdown_icon_dropdown" class="form-label">Dropdown Icon (Image)</label>
+                        <input type="file" name="dropdowns[${dropdownIndex}][icon_dropdown]" class="form-control" accept="image/*">
                     </div>
                 </div>
             `;

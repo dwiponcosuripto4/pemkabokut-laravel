@@ -554,7 +554,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link">
                         <i class="fas fa-users"></i>
                         <span>Users</span>
                     </a>
@@ -576,7 +576,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('headline.data') }}" class="nav-link">
                             <i class="fas fa-bullhorn"></i>
                             <span>Headlines</span>
                         </a>
@@ -588,19 +588,19 @@
                 <div class="nav-section-title">DOKUMEN PUBLIK</div>
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('data.index') }}" class="nav-link">
                             <i class="fas fa-database"></i>
                             <span>Data</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('document.data') }}" class="nav-link">
                             <i class="fas fa-file-alt"></i>
                             <span>Dokumen</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('file.data') }}" class="nav-link">
                             <i class="fas fa-folder"></i>
                             <span>Files</span>
                         </a>
@@ -612,7 +612,7 @@
                 <div class="nav-section-title">LAYANAN MASYARAKAT</div>
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('icon.data') }}" class="nav-link">
                             <i class="fas fa-globe"></i>
                             <span>Portal</span>
                         </a>
@@ -630,63 +630,6 @@
 
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
-        <!-- Top Navbar -->
-        <nav class="navbar navbar-default top-navbar">
-            <div class="container-fluid">
-                <div class="navbar-right-items">
-                    <!-- Notifikasi UMKM Pending -->
-                    <div class="dropdown">
-                        <a href="#" class="notification-icon" data-toggle="dropdown"
-                            id="pendingBusinessNotification">
-                            <i class="fas fa-bell text-secondary"></i>
-                            <span class="badge-notification" id="pendingCount">0</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-right"
-                            style="min-width: 400px; max-height: 400px; overflow-y: auto; border-radius: 8px;">
-                            <li class="dropdown-header">
-                                <i class="fas fa-bell" style="margin-right: 8px; color: #007bff;"></i>
-                                <span style="color: #007bff; font-weight: bold;">UMKM Menunggu Persetujuan</span>
-                            </li>
-                            <li class="divider"></li>
-                            <div id="pendingBusinessList">
-                                <!-- Pending businesses will be loaded here -->
-                            </div>
-                            <li class="divider"></li>
-                            <li><a href="{{ route('admin.businesses.index', ['status' => 0]) }}"
-                                    style="text-align: center; color: #007bff; font-weight: 500;">
-                                    <i class="fas fa-external-link-alt" style="margin-right: 8px;"></i>Lihat Semua
-                                </a></li>
-                        </ul>
-                    </div>
-
-                    <!-- User Profile -->
-                    <div class="dropdown">
-                        <a href="#" class="user-profile-link" data-toggle="dropdown">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL2EDRG6Bwn2QUCmyQQLAjjWcgHyI96W17dkZrXegt55VwzNuMV9bQqbUuEgD9zujP_zLZV1oeoEwjew9zZHlZ_hqODvPfR21GIvHWxVcI5A"
-                                alt="Avatar" class="img-circle" width="36" height="36"
-                                style="object-fit: cover; border: 2px solid #e9ecef; margin-right: 8px;">
-                            <span class="d-none d-md-inline"
-                                style="font-size: 1.6rem; font-weight: 500; color: #000000;">Hi,
-                                Hizrian</span>
-                            <i class="fas fa-chevron-down"
-                                style="margin-left: 8px; font-size: 1rem; color: #000000;"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-right" style="border-radius: 8px;">
-                            <li><a href="#"><i class="fas fa-user"
-                                        style="margin-right: 8px; color: #007bff;"></i>Profile</a>
-                            </li>
-                            <li><a href="#"><i class="fas fa-cog"
-                                        style="margin-right: 8px; color: #6c757d;"></i>Settings</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li><a href="#" style="color: #dc3545;"><i class="fas fa-sign-out-alt"
-                                        style="margin-right: 8px;"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
         <!-- Page Content with Background -->
         <div class="page-content form-container">
             <div class="container">
@@ -701,8 +644,7 @@
                             @method('PUT')
                             <div class="form-group" style="margin-bottom: 25px;">
                                 <label for="title">Title:</label>
-                                <input type="text" class="form-control" name="title"
-                                    value="{{ $post->title }}">
+                                <input type="text" class="form-control" name="title" value="{{ $post->title }}">
                             </div>
 
                             <div class="form-group" style="margin-bottom: 25px;">

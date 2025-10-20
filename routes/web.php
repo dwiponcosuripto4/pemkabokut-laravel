@@ -41,6 +41,7 @@ Route::get('/file/serve/{id}', [FileController::class, 'serve'])->name('file.ser
 Route::get('/umkm', [BusinessController::class, 'index'])->name('umkm.index');
 Route::get('/umkm/create', [BusinessController::class, 'create'])->name('umkm.create');
 Route::post('/umkm', [BusinessController::class, 'store'])->name('umkm.store');
+Route::post('/umkm/expand-url', [BusinessController::class, 'expandUrl'])->name('umkm.expand-url');
 Route::get('/umkm/{id}', [BusinessController::class, 'show'])->name('umkm.show');
 
 // Route untuk dashboard yang hanya dapat diakses jika login dan terverifikasi
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::post('/businesses/{business}/approve', [AdminBusinessController::class, 'approve'])->name('admin.businesses.approve');
     Route::post('/businesses/{business}/reject', [AdminBusinessController::class, 'reject'])->name('admin.businesses.reject');
     Route::delete('/businesses/{business}', [AdminBusinessController::class, 'destroy'])->name('admin.businesses.destroy');
+    Route::post('/businesses/report', [AdminBusinessController::class, 'downloadBusinessReport'])->name('admin.businesses.report');
 });
 
 // Admin Profile Routes
@@ -89,6 +91,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::post('/users/{user}/verify', [App\Http\Controllers\Admin\UserController::class, 'verify'])->name('admin.users.verify');
         Route::delete('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.user.destroy');
     Route::post('/users/{user}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('admin.user.reset-password');
+    Route::post('/users/report', [App\Http\Controllers\Admin\UserController::class, 'downloadReport'])->name('admin.users.report');
 });
 
 // Route untuk profile yang hanya dapat diakses oleh user setelah login
@@ -119,7 +122,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('admin/post/delete/{id}', [PostController::class, 'destroy'])->name('post.destroy');
     Route::post('admin/post/delete-image', [PostController::class, 'deleteImage']);
     Route::patch('admin/post/toggle-draft/{id}', [PostController::class, 'toggleDraft'])->name('admin.post.toggleDraft');
-
+    Route::post('/admin/posts/report', [PostController::class, 'downloadPostReport'])->name('admin.posts.report');
+    
     // Category CRUD
     Route::get('admin/category/create', [CategoryController::class, 'create'])->name('category.create');
     Route::post('admin/categories', [CategoryController::class, 'store'])->name('categories.store');
@@ -135,7 +139,8 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/headline/edit/{id}', [HeadlineController::class, 'edit'])->name('headline.edit');
     Route::post('admin/headline/update/{id}', [HeadlineController::class, 'update'])->name('headline.update');
     Route::delete('admin/headline/delete/{id}', [HeadlineController::class, 'destroy'])->name('headline.destroy');
-
+    Route::get('/headlines/show/{id}', [HeadlineController::class, 'show'])->name('headline.show');
+    
     // Data CRUD
     Route::get('admin/data/index', [DataController::class, 'index'])->name('data.index');
     Route::get('admin/data/create', [DataController::class, 'create'])->name('data.create');
@@ -153,6 +158,7 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/document/edit/{id}', [DocumentController::class, 'edit'])->name('document.edit');
     Route::patch('admin/document/update/{id}', [DocumentController::class, 'update'])->name('document.update');
     Route::delete('admin/document/delete/{id}', [DocumentController::class, 'destroy'])->name('document.destroy');
+    Route::post('/admin/documents/report', [DocumentController::class, 'downloadDocumentReport'])->name('admin.documents.report');
 
     // File CRUD
     Route::get('admin/file/data', [FileController::class, 'data'])->name('file.data');

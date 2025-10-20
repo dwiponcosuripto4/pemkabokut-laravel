@@ -267,8 +267,10 @@
     position: fixed;
     top: 0;
     left: 250px;
-    width: 1270px;
+    right: 0;
+    width: auto;
     z-index: 1100;
+    transition: left 0.3s ease;
 }
 
 .navbar .nav-link {
@@ -296,6 +298,28 @@
     padding: 0.2em 0.4em;
 }
 
+/* Navbar position when sidebar is collapsed */
+.main-content.expanded .navbar {
+    left: 70px;
+}
+
+/* Alternative selector for navbar when sidebar collapsed (backup) */
+.sidebar.collapsed ~ .main-content .navbar {
+    left: 70px;
+}
+
+/* Ensure smooth transitions and proper width calculation */
+@media (min-width: 769px) {
+    .navbar {
+        width: calc(100vw - 250px);
+    }
+
+    .main-content.expanded .navbar,
+    .sidebar.collapsed ~ .main-content .navbar {
+        width: calc(100vw - 70px);
+    }
+}
+
 /* Page Content */
 .page-content {
     padding: 1.5rem;
@@ -317,6 +341,11 @@
 
     .main-content.expanded {
         margin-left: 0;
+    }
+
+    .navbar {
+        left: 0 !important;
+        right: 0;
     }
 }
 
@@ -364,7 +393,9 @@
     .sidebar.collapsed + .sidebar-toggle-btn {
         left: 15px;
     }
-} /* Adjustments for very narrow sidebars */
+}
+
+/* Adjustments for very narrow sidebars */
 .sidebar.collapsed .sidebar-brand {
     justify-content: center;
 }

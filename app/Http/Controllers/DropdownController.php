@@ -26,11 +26,23 @@ class DropdownController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'icon_dropdown' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'link' => 'required|url',
             'icon_id' => 'required|exists:icons,id'
         ]);
 
-        Dropdown::create($request->all());
+        $iconDropdownPath = null;
+        if ($request->hasFile('icon_dropdown')) {
+            $originalName = $request->file('icon_dropdown')->getClientOriginalName();
+            $iconDropdownPath = $request->file('icon_dropdown')->storeAs('dropdown_icons', $originalName, 'public');
+        }
+
+        Dropdown::create([
+            'title' => $request->title,
+            'icon_dropdown' => $iconDropdownPath,
+            'link' => $request->link,
+            'icon_id' => $request->icon_id
+        ]);
 
         return redirect()->route('dropdowns.index')->with('success', 'Dropdown created successfully.');
     }
@@ -53,11 +65,23 @@ class DropdownController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'icon_dropdown' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'link' => 'required|url',
             'icon_id' => 'required|exists:icons,id'
         ]);
 
-        $dropdown->update($request->all());
+        $iconDropdownPath = $dropdown->icon_dropdown;
+        if ($request->hasFile('icon_dropdown')) {
+            $originalName = $request->file('icon_dropdown')->getClientOriginalName();
+            $iconDropdownPath = $request->file('icon_dropdown')->storeAs('dropdown_icons', $originalName, 'public');
+        }
+
+        $dropdown->update([
+            'title' => $request->title,
+            'icon_dropdown' => $iconDropdownPath,
+            'link' => $request->link,
+            'icon_id' => $request->icon_id
+        ]);
 
         return redirect()->route('dropdowns.index')->with('success', 'Dropdown updated successfully.');
     }

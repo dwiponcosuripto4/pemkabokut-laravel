@@ -29,6 +29,16 @@ class FileController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
+        // Sorting hanya berdasarkan id
+        if ($request->input('sort') === 'id_asc') {
+            $query->orderBy('id', 'asc');
+        } elseif ($request->input('sort') === 'id_desc') {
+            $query->orderBy('id', 'desc');
+        } else {
+            // Default: urut dari id terlama (asc)
+            $query->orderBy('id', 'asc');
+        }
+
         $files = $query->get();
         return view('admin.file.data', compact('files', 'documents'));
     }

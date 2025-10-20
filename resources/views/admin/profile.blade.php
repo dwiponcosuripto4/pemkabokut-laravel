@@ -121,6 +121,32 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <label for="unit" class="form-label">Unit Diskominfo</label>
+                                        <select class="form-control @error('unit') is-invalid @enderror" id="unit"
+                                            name="unit" required>
+                                            <option value="">-- Pilih Unit --</option>
+                                            <option value="Bidang Infrastruktur Teknologi Informasi"
+                                                {{ old('unit', $user->unit) == 'Bidang Infrastruktur Teknologi Informasi' ? 'selected' : '' }}>
+                                                Bidang Infrastruktur Teknologi Informasi</option>
+                                            <option value="Bidang Informasi dan Komunikasi Publik"
+                                                {{ old('unit', $user->unit) == 'Bidang Informasi dan Komunikasi Publik' ? 'selected' : '' }}>
+                                                Bidang Informasi dan Komunikasi Publik</option>
+                                            <option value="Bidang Persandian dan Keamanan Informasi"
+                                                {{ old('unit', $user->unit) == 'Bidang Persandian dan Keamanan Informasi' ? 'selected' : '' }}>
+                                                Bidang Persandian dan Keamanan Informasi</option>
+                                            <option value="Bidang Statistik"
+                                                {{ old('unit', $user->unit) == 'Bidang Statistik' ? 'selected' : '' }}>
+                                                Bidang Statistik</option>
+                                            <option value="Sekretariat"
+                                                {{ old('unit', $user->unit) == 'Sekretariat' ? 'selected' : '' }}>
+                                                Sekretariat</option>
+                                        </select>
+                                        @error('unit')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label class="form-label">Bergabung Sejak</label>
                                         <input type="text" class="form-control"
                                             value="{{ $user->created_at->format('d F Y') }}" readonly>
@@ -151,97 +177,153 @@
                             @method('PUT')
                             <div class="mb-3">
                                 <label for="current_password" class="form-label">Password Saat Ini</label>
-                                <input type="password"
-                                    class="form-control @error('current_password') is-invalid @enderror"
-                                    id="current_password" name="current_password" required>
+                                <div class="input-group">
+                                    <input type="password"
+                                        class="form-control @error('current_password') is-invalid @enderror"
+                                        id="current_password" name="current_password" required>
+                                    <span class="input-group-text"
+                                        onclick="togglePassword('current_password', 'eyeIconCurrent')"
+                                        style="cursor:pointer;">
+                                        <svg id="eyeIconCurrent" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" width="20" height="20">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </span>
+                                </div>
                                 @error('current_password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password Baru</label>
-                                <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                    id="password" name="password" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                        id="password" name="password" required>
+                                    <span class="input-group-text" onclick="togglePassword('password', 'eyeIconNew')"
+                                        style="cursor:pointer;">
+                                        <svg id="eyeIconNew" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" width="20" height="20">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </span>
+                                </div>
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" id="password_confirmation"
-                                    name="password_confirmation" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password_confirmation"
+                                        name="password_confirmation" required>
+                                    <span class="input-group-text"
+                                        onclick="togglePassword('password_confirmation', 'eyeIconConfirm')"
+                                        style="cursor:pointer;">
+                                        <svg id="eyeIconConfirm" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" width="20" height="20">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-warning text-white">
                                     <i class="fas fa-key me-1"></i>Update Password
                                 </button>
                             </div>
-                        </form>
+                            <script>
+                                function togglePassword(inputId, iconId) {
+                                    const passwordInput = document.getElementById(inputId);
+                                    const eyeIcon = document.getElementById(iconId);
+                                    if (passwordInput.type === 'password') {
+                                        passwordInput.type = 'text';
+                                        eyeIcon.innerHTML =
+                                            `<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.907-4.568M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.96 9.96 0 01-4.21 5.442M15 12a3 3 0 11-6 0 3 3 0 016 0z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3l18 18' />`;
+                                    } else {
+                                        passwordInput.type = 'password';
+                                        eyeIcon.innerHTML =
+                                            `<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 12a3 3 0 11-6 0 3 3 0 016 0z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' />`;
+                                    }
+                                }
+                            </script>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <!-- Horizontal Account Info Card -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex align-items-center">
-                        <i class="fas fa-info-circle text-info me-2"></i>
-                        <h6 class="m-0 font-weight-bold text-info">Informasi Akun</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex flex-row flex-wrap justify-content-between align-items-center">
-                            <div class="p-2">
-                                <small class="text-muted">ID Pengguna:</small><br>
-                                <span class="fw-bold">#{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
-                            </div>
-                            <div class="p-2">
-                                <small class="text-muted">Terakhir Login:</small><br>
-                                <span class="fw-bold">{{ now()->format('d F Y, H:i') }}</span>
-                            </div>
-                            <div class="info-card-horizontal p-2">
-                                <div class="card card-horizontal border-left-primary shadow mb-0">
-                                    <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="fas fa-newspaper fa-2x text-primary"></i>
-                                            <div>
-                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Post
-                                                </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{ \App\Models\Post::where('user_id', $user->id)->count() }}
-                                                </div>
+    </div>
+    <!-- Horizontal Account Info Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle text-info me-2"></i>
+                    <h6 class="m-0 font-weight-bold text-info">Informasi Akun</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-row flex-wrap justify-content-between align-items-center">
+                        <div class="p-2">
+                            <small class="text-muted">ID Pengguna:</small><br>
+                            <span class="fw-bold">#{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        </div>
+                        <div class="p-2">
+                            <small class="text-muted">Terakhir Login:</small><br>
+                            <span class="fw-bold">{{ now()->format('d F Y, H:i') }}</span>
+                        </div>
+                        <div class="info-card-horizontal p-2">
+                            <div class="card card-horizontal border-left-primary shadow mb-0">
+                                <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-newspaper fa-2x text-primary"></i>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Post
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ \App\Models\Post::where('user_id', $user->id)->count() }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="info-card-horizontal p-2">
-                                <div class="card card-horizontal border-left-success shadow mb-0">
-                                    <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="fas fa-file-alt fa-2x text-success"></i>
-                                            <div>
-                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    Document</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{ \App\Models\Document::where('user_id', $user->id)->count() }}
-                                                </div>
+                        </div>
+                        <div class="info-card-horizontal p-2">
+                            <div class="card card-horizontal border-left-success shadow mb-0">
+                                <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-file-alt fa-2x text-success"></i>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Document</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ \App\Models\Document::where('user_id', $user->id)->count() }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="info-card-horizontal p-2">
-                                <div class="card card-horizontal border-left-info shadow mb-0">
-                                    <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="fas fa-icons fa-2x text-info"></i>
-                                            <div>
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Icon
-                                                </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{ \App\Models\Icon::where('user_id', $user->id)->count() }}
-                                                </div>
+                        </div>
+                        <div class="info-card-horizontal p-2">
+                            <div class="card card-horizontal border-left-info shadow mb-0">
+                                <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-icons fa-2x text-info"></i>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Icon
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ \App\Models\Icon::where('user_id', $user->id)->count() }}
                                             </div>
                                         </div>
                                     </div>
@@ -252,6 +334,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
     </div>
     </div>

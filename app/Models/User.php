@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email', 
         'password',
         'foto',
+        'unit',
         'email_verified_at',
         'remember_token',
         'is_verified',

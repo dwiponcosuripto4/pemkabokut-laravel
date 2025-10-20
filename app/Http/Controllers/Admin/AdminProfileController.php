@@ -41,6 +41,7 @@ class AdminProfileController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'unit' => ['required', 'string'],
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ], [
             'name.required' => 'Nama wajib diisi.',
@@ -48,6 +49,7 @@ class AdminProfileController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah digunakan oleh pengguna lain.',
+            'unit.required' => 'Unit wajib dipilih.',
             'foto.image' => 'File harus berupa gambar.',
             'foto.mimes' => 'Format foto harus: jpeg, png, jpg, atau gif.',
             'foto.max' => 'Ukuran foto tidak boleh lebih dari 2MB.',
@@ -57,6 +59,7 @@ class AdminProfileController extends Controller
             // Update basic info
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->unit = $request->unit;
 
             // Handle photo upload
             if ($request->hasFile('foto')) {

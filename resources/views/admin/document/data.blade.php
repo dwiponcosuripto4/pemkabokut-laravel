@@ -55,6 +55,11 @@
                     <a href="{{ route('document.create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus me-2"></i>Add Document
                     </a>
+
+                    <!-- Report Button -->
+                    <button class="btn btn-danger btn-sm" onclick="downloadDocumentReport()" title="Download Laporan PDF">
+                        <i class="fas fa-file-pdf me-1"></i>Laporan
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -72,6 +77,7 @@
                                 <th width="5%">ID</th>
                                 <th width="20%">Title</th>
                                 <th width="20%">Data</th>
+                                <th width="10%">File</th>
                                 <th width="15%">Date</th>
                                 <th width="15%">User ID</th>
                                 <th width="15%">Action</th>
@@ -84,6 +90,7 @@
                                     <td>{{ $document->title }}</td>
                                     <td data-id="{{ $document->data->id ?? '' }}">
                                         {{ $document->data->title ?? 'No Data' }}</td>
+                                    <td class="text-center">{{ $document->file->count() }}</td>
                                     <td>{{ $document->date ?? '-' }}</td>
                                     <td class="text-center">
                                         @if ($document->user)
@@ -163,5 +170,38 @@
             searchInput.addEventListener('input', filterTable);
             dataFilter.addEventListener('change', filterTable);
         });
+
+        // Download Document Report Function
+        function downloadDocumentReport() {
+            const loadingBtn = event.target;
+            const originalContent = loadingBtn.innerHTML;
+
+            // Show loading state
+            loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+            loadingBtn.disabled = true;
+
+            // Create form to download PDF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/documents/report';
+            form.style.display = 'none';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+
+            // Reset button after delay
+            setTimeout(() => {
+                loadingBtn.innerHTML = originalContent;
+                loadingBtn.disabled = false;
+                document.body.removeChild(form);
+            }, 3000);
+        }
     </script>
 @endsection

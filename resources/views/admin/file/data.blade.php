@@ -36,6 +36,17 @@
                         {{ $document->title }}</option>
                 @endforeach
             </select>
+            <!-- Tombol sort id -->
+            @php
+                // Default sort is asc, so toggle to desc if not set
+                $currentSort = request('sort');
+                $nextSort = $currentSort === 'id_desc' ? 'id_asc' : 'id_desc';
+            @endphp
+            <a href="?{{ http_build_query(array_merge(request()->except('sort'), ['sort' => $nextSort])) }}"
+                class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center" title="Sort by ID"
+                style="width: 32px; height: 32px; border-radius: 50%;">
+                <i class="fas fa-sort text-primary"></i>
+            </a>
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
         <div class="table-responsive">

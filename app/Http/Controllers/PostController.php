@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 
 use DOMDocument;
+use Carbon\Carbon;
 use App\Models\Icon;
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Business;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\Headline;
-use App\Models\Business;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -352,4 +355,50 @@ class PostController extends Controller
         $post->save();
         return redirect()->back()->with('success', $post->draft ? 'Post set as draft.' : 'Post published.');
     }
+
+    /**
+     * Download laporan post PDF
+     */
+    public function downloadPostReport()
+    {
+        // Get current month posts
+        $currentMonth = Carbon::now()->startOfMonth();
+        $postsThisMonth = Post::with(['category', 'headline', 'user'])
+            ->where('created_at', '>=', $currentMonth)
+            ->orderBy('published_at', 'desc')
+            ->get();
+        
+        // Get all posts for statistics
+        $allPosts = Post::with(['category', 'headline'])->get();
+        
+        // Calculate statistics
+        $totalPosts = $allPosts->count();
+        $postsWithCategory = $allPosts->whereNotNull('category_id')->count();
+        $postsWithHeadline = $allPosts->whereNotNull('headline_id')->count();
+        $publishedPosts = $allPosts->where('draft', false)->count();
+        $draftPosts = $allPosts->where('draft', true)->count();
+        $totalCategories = Category::count();
+        $totalHeadlines = Headline::count();
+        
+        $data = [
+            'report_date' => Carbon::now()->format('d F Y'),
+            'current_month' => Carbon::now()->format('F Y'),
+            'total_posts' => $totalPosts,
+            'posts_with_category' => $postsWithCategory,
+            'posts_with_headline' => $postsWithHeadline,
+            'published_posts' => $publishedPosts,
+            'draft_posts' => $draftPosts,
+            'total_categories' => $totalCategories,
+            'total_headlines' => $totalHeadlines,
+            'posts_this_month' => $postsThisMonth
+        ];
+        
+        $pdf = PDF::loadView('admin.post.report', $data);
+        $pdf->setPaper('A4', 'portrait');
+        
+        $filename = 'Laporan_Post_' . Carbon::now()->format('Y_m_d') . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+    
 }

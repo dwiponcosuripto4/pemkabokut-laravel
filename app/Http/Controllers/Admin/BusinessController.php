@@ -118,8 +118,12 @@ class BusinessController extends Controller
     
 public function edit(string $id)
     {
-        $business = Business::findOrFail($id);
-        return view('admin.businesses.edit', compact('business'));
+    $business = Business::findOrFail($id);
+    // Pastikan field input_link, latitude, longitude tersedia
+    $input_link = $business->input_link ?? $business->input_url ?? null;
+    $latitude = $business->latitude ?? null;
+    $longitude = $business->longitude ?? null;
+    return view('admin.businesses.edit', compact('business', 'input_link', 'latitude', 'longitude'));
     }
 
     /**
@@ -139,6 +143,9 @@ public function edit(string $id)
             'nib' => 'nullable|string|max:50',
             'deskripsi' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'input_url' => 'nullable|string|max:2000',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         $data = [
@@ -150,7 +157,27 @@ public function edit(string $id)
             'email' => $request->email,
             'nib' => $request->nib,
             'deskripsi' => $request->deskripsi,
+            'input_url' => $request->input_url,
         ];
+
+        // ==== Koordinat: prioritas input manual ====
+        $lat = $request->latitude ?? null;
+        $lng = $request->longitude ?? null;
+
+        // ==== Jika koordinat kosong & ada URL: coba ekstrak ====
+        $url = $request->input_url ?? null;
+        if ((is_null($lat) || is_null($lng)) && $url) {
+            if (class_exists('App\\Services\\GoogleMapsParser')) {
+                $parser = \App\Services\GoogleMapsParser::extractLatLng($url);
+                if ($parser) {
+                    $lat = $parser['lat'];
+                    $lng = $parser['lng'];
+                }
+            }
+        }
+
+        $data['latitude'] = $lat;
+        $data['longitude'] = $lng;
 
         // Handle single image upload with original name
         if ($request->hasFile('foto')) {
@@ -167,6 +194,38 @@ public function edit(string $id)
         $business->update($data);
 
         return redirect()->route('admin.businesses.index')->with('success', 'UMKM berhasil diupdate.');
+    }
+
+    public function downloadBusinessReport()
+    {
+        // Menggunakan DomPDF
+        $pdf = app('dompdf.wrapper');
+
+        // Hitung statistik UMKM
+        $totalBusinesses = Business::count();
+        $totalApproved = Business::where('status', 1)->count();
+        $totalPending = Business::where('status', 0)->count();
+
+        // Ambil UMKM bulan ini dengan relasi user untuk approved_by
+        $businesses = Business::with(['user'])
+            ->whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Generate PDF dengan view yang akan kita buat
+        $pdf->loadView('admin.businesses.report', compact(
+            'totalBusinesses', 
+            'totalApproved', 
+            'totalPending',
+            'businesses'
+        ));
+
+        // Set paper size dan orientasi
+        $pdf->setPaper('A4', 'landscape'); // landscape karena tabel cukup lebar
+
+        // Download PDF dengan nama file yang sesuai
+        return $pdf->download('Laporan_UMKM_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 
 }

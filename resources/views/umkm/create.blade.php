@@ -74,6 +74,41 @@
                                         value="{{ old('owner') }}" required>
                                 </div>
 
+                                <!-- Link Google Maps (Opsional) -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="input_url" class="form-label">Link Google Maps (Opsional)</label>
+                                    <div class="input-group">
+                                        <input type="url" class="form-control" id="input_url" name="input_url"
+                                            value="{{ old('input_url') }}"
+                                            placeholder="Contoh: https://maps.app.goo.gl/jJwhxr7QvHh5P3SVA atau https://www.google.com/maps/place/...">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            id="previewBtn">Preview</button>
+                                    </div>
+                                    <small class="text-muted">
+                                        <strong>Cara mendapat link:</strong><br>
+                                        1. Buka Google Maps → 2. Cari lokasi usaha → 3. Klik 'Bagikan' → 4. Copy link dan
+                                        paste di sini<br>
+                                        <strong>Mendukung:</strong> Link pendek (maps.app.goo.gl) dan link panjang Google
+                                        Maps
+                                    </small>
+                                    <!-- Preview Iframe -->
+                                    <div id="previewContainer" class="mt-3" style="display:none;">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">Preview Google Maps:</label>
+                                            <small class="text-muted">Klik peta untuk membuka di Google Maps</small>
+                                        </div>
+                                        <div class="ratio ratio-16x9 position-relative"
+                                            style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                                            <iframe id="previewIframe" src=""
+                                                style="border:0; width:100%; height:100%;" loading="lazy"
+                                                referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                                            <!-- Clickable overlay -->
+                                            <div id="mapClickOverlay" class="position-absolute top-0 start-0 w-100 h-100"
+                                                style="background: transparent; cursor: pointer; z-index: 10;"
+                                                onclick="openOriginalMap()" title="Klik untuk membuka di Google Maps"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Email -->
                                 <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">Email <span
@@ -104,36 +139,6 @@
                                             class="text-danger">*</span></label>
                                     <textarea class="form-control" id="alamat" name="alamat" rows="3" required
                                         placeholder="Masukkan alamat lengkap usaha Anda (contoh: Jl. Sudirman No. 123, Kelurahan ABC, Kecamatan XYZ, Kota Jakarta)">{{ old('alamat') }}</textarea>
-                                </div>
-
-                                <!-- Link Google Maps -->
-                                <div class="col-md-12 mb-3">
-                                    <label for="google_maps_link" class="form-label">Link Google Maps (Opsional)</label>
-                                    <div class="input-group">
-                                        <input type="url" class="form-control" id="google_maps_link"
-                                            name="google_maps_link" value="{{ old('google_maps_link') }}"
-                                            placeholder="Contoh: https://www.google.com/maps/place/Nama+Tempat/@-6.2087634,106.845599,17z">
-                                        <button type="button" class="btn btn-success"
-                                            onclick="extractLocationFromLink()">
-                                            <i class="fas fa-map-marker-alt"></i> Preview Lokasi
-                                        </button>
-                                    </div>
-                                    <small class="text-muted">
-                                        <strong>Cara mendapat link:</strong>
-                                        1. Buka Google Maps → 2. Cari lokasi usaha → 3. Klik "Bagikan" → 4. Copy link dan
-                                        paste di sini
-                                    </small>
-
-                                    <!-- Preview Map Container -->
-                                    <div id="map-preview"
-                                        style="height: 300px; width: 100%; margin-top: 15px; display: none;"
-                                        class="border rounded">
-                                        <div id="map" style="height: 100%; width: 100%;"></div>
-                                    </div>
-
-                                    <!-- Koordinat tersembunyi -->
-                                    <input type="hidden" id="latitude" name="latitude">
-                                    <input type="hidden" id="longitude" name="longitude">
                                 </div>
 
                                 <!-- Deskripsi -->
@@ -172,183 +177,7 @@
         </div>
     </div>
 
-    <!-- Leaflet OpenStreetMap CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
-        let map;
-        let marker;
-
-        function extractLocationFromLink() {
-            const linkInput = document.getElementById('google_maps_link');
-            const link = linkInput.value.trim();
-
-            if (!link) {
-                alert('Masukkan link Google Maps terlebih dahulu');
-                return;
-            }
-
-            // Extract coordinates from various Google Maps link formats
-            const coordinates = extractCoordinatesFromGoogleMapsLink(link);
-
-            if (coordinates) {
-                showMapPreview(coordinates.lat, coordinates.lng);
-
-                // Save coordinates
-                document.getElementById('latitude').value = coordinates.lat;
-                document.getElementById('longitude').value = coordinates.lng;
-
-                // Optional: Update address field with reverse geocoding
-                reverseGeocode(coordinates.lat, coordinates.lng);
-
-                showMessage('success', 'Lokasi berhasil ditemukan dan ditampilkan di peta!');
-            } else {
-                showMessage('danger',
-                    'Link Google Maps tidak valid atau tidak dapat diproses. Pastikan link yang Anda masukkan benar.');
-            }
-        }
-
-        function extractCoordinatesFromGoogleMapsLink(link) {
-            try {
-                // Pattern 1: @lat,lng,zoom (most common in share links)
-                let match = link.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*),/);
-                if (match) {
-                    return {
-                        lat: parseFloat(match[1]),
-                        lng: parseFloat(match[2])
-                    };
-                }
-
-                // Pattern 2: !3d[lat]!4d[lng] (from embed links)
-                match = link.match(/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/);
-                if (match) {
-                    return {
-                        lat: parseFloat(match[1]),
-                        lng: parseFloat(match[2])
-                    };
-                }
-
-                // Pattern 3: q=lat,lng
-                match = link.match(/q=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
-                if (match) {
-                    return {
-                        lat: parseFloat(match[1]),
-                        lng: parseFloat(match[2])
-                    };
-                }
-
-                // Pattern 4: ll=lat,lng
-                match = link.match(/ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
-                if (match) {
-                    return {
-                        lat: parseFloat(match[1]),
-                        lng: parseFloat(match[2])
-                    };
-                }
-
-                // Pattern 5: /place/name/@lat,lng
-                match = link.match(/\/place\/[^\/]+\/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
-                if (match) {
-                    return {
-                        lat: parseFloat(match[1]),
-                        lng: parseFloat(match[2])
-                    };
-                }
-
-                return null;
-            } catch (error) {
-                console.error('Error extracting coordinates:', error);
-                return null;
-            }
-        }
-
-        function showMapPreview(lat, lng) {
-            const mapContainer = document.getElementById('map-preview');
-            mapContainer.style.display = 'block';
-
-            if (!map) {
-                // Initialize Leaflet map
-                map = L.map('map').setView([lat, lng], 15);
-
-                // Add OpenStreetMap tiles
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 19
-                }).addTo(map);
-            } else {
-                // Update existing map
-                map.setView([lat, lng], 15);
-            }
-
-            // Remove existing marker
-            if (marker) {
-                map.removeLayer(marker);
-            }
-
-            // Add new marker
-            marker = L.marker([lat, lng], {
-                draggable: true
-            }).addTo(map);
-
-            // Update coordinates when marker is dragged
-            marker.on('dragend', function() {
-                const position = marker.getLatLng();
-                document.getElementById('latitude').value = position.lat;
-                document.getElementById('longitude').value = position.lng;
-                reverseGeocode(position.lat, position.lng);
-            });
-
-            // Add click event to map for repositioning marker
-            map.on('click', function(e) {
-                marker.setLatLng(e.latlng);
-                document.getElementById('latitude').value = e.latlng.lat;
-                document.getElementById('longitude').value = e.latlng.lng;
-                reverseGeocode(e.latlng.lat, e.latlng.lng);
-            });
-        }
-
-        function reverseGeocode(lat, lng) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.display_name) {
-                        const alamatField = document.getElementById('alamat');
-                        // Only update if field is empty or user confirms
-                        if (!alamatField.value.trim() || confirm('Update alamat dengan data dari peta?')) {
-                            alamatField.value = data.display_name;
-                            showMessage('info', 'Alamat telah diperbarui berdasarkan lokasi di peta');
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.log('Error reverse geocoding:', error);
-                });
-        }
-
-        function showMessage(type, message) {
-            // Remove existing alerts
-            const existingAlerts = document.querySelectorAll('.temp-alert');
-            existingAlerts.forEach(alert => alert.remove());
-
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-2 temp-alert`;
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-            `;
-
-            const mapContainer = document.getElementById('map-preview');
-            mapContainer.appendChild(alertDiv);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
-        }
-
         function previewImages() {
             const input = document.getElementById('foto');
             const preview = document.getElementById('image-preview');
@@ -374,49 +203,93 @@
             }
         }
 
-        // Add helpful example function
-        function showExampleLinks() {
-            const examples = `
-Contoh format link Google Maps yang didukung:
+        // Preview Google Maps logic
+        let originalMapUrl = ''; // Store the original URL
 
-Contoh Link Place:
-https://www.google.com/maps/place/Nama+Tempat/@-6.2087634,106.845599,17z
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('previewBtn').addEventListener('click', function() {
+                const url = document.getElementById('input_url').value.trim();
+                const previewContainer = document.getElementById('previewContainer');
+                const iframe = document.getElementById('previewIframe');
 
-Cara mendapatkan link yang berfungsi:
-1. Buka Google Maps di browser desktop
-2. Cari atau tandai lokasi usaha Anda
-3. Copy link yang muncul di search bar browser
-4. Paste di kolom di atas
-            `;
-            alert(examples);
+                if (!url) {
+                    alert('Silakan masukkan URL Google Maps terlebih dahulu');
+                    return;
+                }
+
+                // Store the original URL for later use
+                originalMapUrl = url;
+
+                // Show preview container
+                previewContainer.style.display = 'block';
+
+                // Check if it's a short URL
+                if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps')) {
+                    // Expand short URL via backend
+                    fetch('/umkm/expand-url', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    ?.getAttribute('content') || ''
+                            },
+                            body: JSON.stringify({
+                                url: url
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.expandedUrl) {
+                                generateEmbedUrl(data.expandedUrl, iframe);
+                                // Update originalMapUrl with expanded URL if available
+                                originalMapUrl = data.expandedUrl;
+                            } else {
+                                generateEmbedUrl(url, iframe);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error expanding URL:', error);
+                            generateEmbedUrl(url, iframe);
+                        });
+                } else {
+                    generateEmbedUrl(url, iframe);
+                }
+            });
+        });
+
+        function openOriginalMap() {
+            if (originalMapUrl) {
+                window.open(originalMapUrl, '_blank');
+            } else {
+                alert('URL Google Maps tidak tersedia');
+            }
         }
 
-        // Add example button in the DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            const linkInput = document.getElementById('google_maps_link');
-            if (linkInput) {
-                const helpButton = document.createElement('button');
-                helpButton.type = 'button';
-                helpButton.className = 'btn btn-outline-info btn-sm mt-1';
-                helpButton.innerHTML = '<i class="fas fa-question-circle"></i> Lihat Contoh Link';
-                helpButton.onclick = showExampleLinks;
+        function generateEmbedUrl(url, iframe) {
+            let embedUrl = '';
 
-                linkInput.parentNode.appendChild(helpButton);
+            // Try to extract lat,lng from URL
+            let match = url.match(/@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/);
+            if (match) {
+                const lat = match[1];
+                const lng = match[2];
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM40sNsKwMDAnMDAuMCJTIDEwN8KwMzEnMDAuMCJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
+            } else if (url) {
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d106.8456!3d-6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMzEuNyJTIDEwNsKwNTAnNDQuMiJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
+            } else {
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d106.8456!3d-6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMzEuNyJTIDEwNsKwNTAnNDQuMiJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
             }
-        });
+
+            iframe.src = embedUrl;
+        }
     </script>
 
     <style>
         .gap-2 {
             gap: 0.5rem;
-        }
-
-        #image-preview .card {
-            border: 1px solid #dee2e6;
-        }
-
-        #image-preview .card-img-top {
-            border-bottom: 1px solid #dee2e6;
         }
 
         .form-label {
@@ -426,6 +299,30 @@ Cara mendapatkan link yang berfungsi:
 
         .text-danger {
             color: #dc3545 !important;
+        }
+
+        .position-relative {
+            position: relative !important;
+        }
+
+        .position-absolute {
+            position: absolute !important;
+        }
+
+        .top-0 {
+            top: 0 !important;
+        }
+
+        .start-0 {
+            left: 0 !important;
+        }
+
+        .w-100 {
+            width: 100% !important;
+        }
+
+        .h-100 {
+            height: 100% !important;
         }
     </style>
 @endsection

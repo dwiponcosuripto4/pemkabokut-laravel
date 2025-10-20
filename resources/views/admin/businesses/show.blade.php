@@ -111,6 +111,14 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-3">
+                                <strong>Business Type:</strong>
+                            </div>
+                            <div class="col-sm-9">
+                                <span class="badge bg-primary">{{ $business->jenis }}</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
                                 <strong>Owner:</strong>
                             </div>
                             <div class="col-sm-9">
@@ -119,18 +127,22 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-3">
-                                <strong>Business Type:</strong>
+                                <strong>Address:</strong>
                             </div>
                             <div class="col-sm-9">
-                                <span class="badge bg-info">{{ $business->jenis }}</span>
+                                <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                {{ $business->alamat }}
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-3">
-                                <strong>Address:</strong>
+                                <strong>Phone Number:</strong>
                             </div>
                             <div class="col-sm-9">
-                                {{ $business->alamat }}
+                                <i class="fas fa-phone text-success me-1"></i>
+                                <a href="tel:{{ $business->nomor_telepon }}" class="text-decoration-none">
+                                    {{ $business->nomor_telepon }}
+                                </a>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -138,46 +150,67 @@
                                 <strong>Email:</strong>
                             </div>
                             <div class="col-sm-9">
-                                <a href="mailto:{{ $business->email }}">{{ $business->email }}</a>
+                                <i class="fas fa-envelope text-primary me-1"></i>
+                                <a href="mailto:{{ $business->email }}" class="text-decoration-none">
+                                    {{ $business->email }}
+                                </a>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-sm-3">
-                                <strong>Phone:</strong>
+                        @if ($business->nib)
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>NIB:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    {{ $business->nib }}
+                                </div>
                             </div>
-                            <div class="col-sm-9">
-                                <a href="tel:{{ $business->nomor_telepon }}">{{ $business->nomor_telepon }}</a>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-sm-3">
-                                <strong>NIB:</strong>
-                            </div>
-                            <div class="col-sm-9">
-                                {{ $business->nib }}
-                            </div>
-                        </div>
+                        @endif
                         <div class="row mb-3">
                             <div class="col-sm-3">
                                 <strong>Description:</strong>
                             </div>
                             <div class="col-sm-9">
-                                <p class="mb-0">{{ $business->deskripsi }}</p>
+                                <div class="text-muted" style="white-space: pre-wrap;">{{ $business->deskripsi }}</div>
                             </div>
                         </div>
-                        @if ($business->google_maps_link)
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <strong>Google Maps:</strong>
-                                </div>
-                                <div class="col-sm-9">
-                                    <a href="{{ $business->google_maps_link }}" target="_blank"
-                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-map-marker-alt me-1"></i>View on Maps
-                                    </a>
-                                </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Preview Lokasi (Google Maps):</strong>
                             </div>
-                        @endif
+                            <div class="col-sm-9">
+                                @php
+                                    // Susun embed URL, sama seperti controller
+                                    $embed = null;
+                                    if (!is_null($business->latitude) && !is_null($business->longitude)) {
+                                        $embed = "https://www.google.com/maps?q={$business->latitude},{$business->longitude}&z=16&hl=id&output=embed";
+                                    } else {
+                                        $query = $business->alamat ?: $business->input_url ?: $business->nama;
+                                        $embed =
+                                            'https://www.google.com/maps?q=' .
+                                            urlencode($query) .
+                                            '&z=16&hl=id&output=embed';
+                                    }
+                                @endphp
+                                @if ($embed)
+                                    <div class="ratio ratio-16x9 position-relative mb-2"
+                                        style="border-radius:10px;overflow:hidden;">
+                                        <iframe id="adminShowMapIframe" src="{{ $embed }}" width="100%"
+                                            height="320" style="border:0;" allowfullscreen loading="lazy"
+                                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                        <div id="adminShowMapClickOverlay"
+                                            class="position-absolute top-0 start-0 w-100 h-100"
+                                            style="background: transparent; cursor: pointer; z-index: 10;"
+                                            onclick="openOriginalMapAdmin()" title="Klik untuk membuka di Google Maps">
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="text-muted">Lokasi tidak tersedia</div>
+                                @endif
+                                <small class="text-muted"><i class="fas fa-map-marker-alt"></i>
+                                    {{ $business->alamat }}</small>
+                            </div>
+                        </div>
                         @if ($business->latitude && $business->longitude)
                             <div class="row mb-3">
                                 <div class="col-sm-3">
@@ -313,6 +346,23 @@
             });
         });
 
+        // Fungsi untuk membuka lokasi asli di Google Maps
+        function openOriginalMapAdmin() {
+            var url = @json($business->input_url ?? null);
+            if (url) {
+                window.open(url, '_blank');
+            } else if (@json($business->latitude) && @json($business->longitude)) {
+                var lat = @json($business->latitude);
+                var lng = @json($business->longitude);
+                window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+            } else if (@json($business->alamat)) {
+                var alamat = @json($business->alamat);
+                window.open(`https://www.google.com/maps?q=${encodeURIComponent(alamat)}`, '_blank');
+            } else {
+                var nama = @json($business->nama);
+                window.open(`https://www.google.com/maps?q=${encodeURIComponent(nama)}`, '_blank');
+            }
+        }
         // ...existing code...
     </script>
 @endsection

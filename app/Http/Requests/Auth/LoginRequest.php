@@ -29,6 +29,8 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'unit' => ['required', 'string'],
+            'captcha' => ['required', 'numeric'],
         ];
     }
 
@@ -45,6 +47,12 @@ class LoginRequest extends FormRequest
         if (! $user || ! $user->is_verified) {
             throw ValidationException::withMessages([
                 'email' => 'Akun Anda belum diverifikasi admin.',
+            ]);
+        }
+        // Validasi unit
+        if ($user->unit !== $this->unit) {
+            throw ValidationException::withMessages([
+                'unit' => 'Unit yang dipilih tidak sesuai dengan data user.',
             ]);
         }
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {

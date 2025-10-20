@@ -206,6 +206,63 @@
                                 @enderror
                                 <small class="form-text text-muted">Opsional - Pilih satu foto untuk diupload</small>
                             </div>
+
+                            <!-- Input Google Maps URL & Preview -->
+                            <div class="mb-3">
+                                <label for="input_url" class="form-label">Link Google Maps (Opsional)</label>
+                                <input type="url" class="form-control @error('input_url') is-invalid @enderror"
+                                    id="input_url" name="input_url" value="{{ old('input_url', $business->input_url) }}"
+                                    placeholder="Contoh: https://maps.app.goo.gl/jJwhxr7QvHh5P3SVA atau https://www.google.com/maps/place/...">
+                                @error('input_url')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">
+                                    <strong>Cara mendapat link:</strong><br>
+                                    1. Buka Google Maps → 2. Cari lokasi usaha → 3. Klik 'Bagikan' → 4. Copy link dan paste
+                                    di sini<br>
+                                    <strong>Mendukung:</strong> Link pendek (maps.app.goo.gl) dan link panjang Google Maps
+                                </small>
+                                <!-- Preview Iframe -->
+                                @php
+                                    $lat = old('latitude', $business->latitude);
+                                    $lng = old('longitude', $business->longitude);
+                                    $inputUrl = old('input_url', $business->input_url);
+                                    $embedUrl = '';
+                                    if ($lat && $lng) {
+                                        $embedUrl = "https://www.google.com/maps?q={$lat},{$lng}&z=16&hl=id&output=embed";
+                                    } elseif ($inputUrl) {
+                                        if (preg_match('/@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/', $inputUrl, $m)) {
+                                            $lat = $m[1];
+                                            $lng = $m[2];
+                                            $embedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d{$lng}!3d{$lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM40sNsKwMDAnMDAuMCJTIDEwN8KwMzEnMDAuMCJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid";
+                                        } else {
+                                            $embedUrl =
+                                                'https://www.google.com/maps?q=' .
+                                                urlencode($inputUrl) .
+                                                '&z=16&hl=id&output=embed';
+                                        }
+                                    }
+                                @endphp
+                                <div id="previewContainer" class="mt-3"
+                                    style="{{ $embedUrl ? '' : 'display:none;' }}">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">Preview Google Maps:</label>
+                                        <small class="text-muted">Klik peta untuk membuka di Google Maps</small>
+                                    </div>
+                                    <div class="ratio ratio-16x9 position-relative"
+                                        style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                                        <iframe id="previewIframe" src="{{ $embedUrl }}"
+                                            style="border:0; width:100%; height:100%;" loading="lazy"
+                                            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                                        <!-- Clickable overlay -->
+                                        <div id="mapClickOverlay" class="position-absolute top-0 start-0 w-100 h-100"
+                                            style="background: transparent; cursor: pointer; z-index: 10;"
+                                            onclick="openOriginalMapEdit()" title="Klik untuk membuka di Google Maps">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{ route('admin.businesses.index') }}" class="btn btn-secondary"><i
                                         class="fas fa-arrow-left me-1"></i>Kembali</a>
@@ -232,4 +289,83 @@
 @endpush
 
 @push('scripts')
+    <script>
+        // Preview Google Maps logic
+        let originalMapUrl = @json(old('input_url', $business->input_url));
+
+        function showPreview(url) {
+            const previewContainer = document.getElementById('previewContainer');
+            const iframe = document.getElementById('previewIframe');
+            if (!url) {
+                previewContainer.style.display = 'none';
+                iframe.src = '';
+                return;
+            }
+            previewContainer.style.display = 'block';
+            // Check if it's a short URL
+            if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps')) {
+                fetch('/umkm/expand-url', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                                'content') || ''
+                        },
+                        body: JSON.stringify({
+                            url: url
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.expandedUrl) {
+                            generateEmbedUrl(data.expandedUrl, iframe);
+                            originalMapUrl = data.expandedUrl;
+                        } else {
+                            generateEmbedUrl(url, iframe);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error expanding URL:', error);
+                        generateEmbedUrl(url, iframe);
+                    });
+            } else {
+                generateEmbedUrl(url, iframe);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tampilkan preview otomatis jika ada input_url
+            const url = document.getElementById('input_url').value.trim();
+            if (url) {
+                showPreview(url);
+            }
+        });
+
+        function openOriginalMapEdit() {
+            if (originalMapUrl) {
+                window.open(originalMapUrl, '_blank');
+            } else {
+                alert('URL Google Maps tidak tersedia');
+            }
+        }
+
+        function generateEmbedUrl(url, iframe) {
+            let embedUrl = '';
+            // Try to extract lat,lng from URL
+            let match = url.match(/@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/);
+            if (match) {
+                const lat = match[1];
+                const lng = match[2];
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM40sNsKwMDAnMDAuMCJTIDEwN8KwMzEnMDAuMCJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
+            } else if (url) {
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d106.8456!3d-6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMzEuNyJTIDEwNsKwNTAnNDQuMiJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
+            } else {
+                embedUrl =
+                    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d106.8456!3d-6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMzEuNyJTIDEwNsKwNTAnNDQuMiJF!5e0!3m2!1sid!2sid!4v1234567890!5m2!1sid!2sid`;
+            }
+            iframe.src = embedUrl;
+        }
+    </script>
 @endpush

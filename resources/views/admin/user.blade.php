@@ -109,6 +109,10 @@
                         <option value="active">Terverifikasi</option>
                         <option value="inactive">Belum terverifikasi</option>
                     </select>
+                    <!-- Report Button -->
+                    <button class="btn btn-danger btn-sm" onclick="downloadReport()" title="Download Laporan PDF">
+                        <i class="fas fa-file-pdf me-1"></i>Laporan
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -119,9 +123,10 @@
                                 <th width="5%">ID</th>
                                 <th width="15%">Foto</th>
                                 <th width="20%">Nama</th>
-                                <th width="25%">Email</th>
-                                <th width="15%">Status</th>
-                                <th width="15%">Terdaftar</th>
+                                <th width="20%">Email</th>
+                                <th width="15%">Unit</th>
+                                <th width="10%">Status</th>
+                                <th width="10%">Terdaftar</th>
                                 <th width="15%">Action</th>
                             </tr>
                         </thead>
@@ -154,6 +159,9 @@
                                     <td>
                                         <span
                                             class="{{ $user->is_verified ? 'text-primary' : 'text-muted' }}">{{ $user->email }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-medium">{{ $user->unit ?? '-' }}</span>
                                     </td>
                                     <td>
                                         @if ($user->is_verified)
@@ -308,6 +316,17 @@
 
         .opacity-50 {
             opacity: 0.5;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc3545;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 
@@ -466,6 +485,38 @@
             toastElement.addEventListener('hidden.bs.toast', () => {
                 toastElement.remove();
             });
+        }
+        // Download Report Function
+        function downloadReport() {
+            const loadingBtn = event.target;
+            const originalContent = loadingBtn.innerHTML;
+
+            // Show loading state
+            loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+            loadingBtn.disabled = true;
+
+            // Create form to download PDF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/users/report';
+            form.style.display = 'none';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+
+            // Reset button after delay
+            setTimeout(() => {
+                loadingBtn.innerHTML = originalContent;
+                loadingBtn.disabled = false;
+                document.body.removeChild(form);
+            }, 3000);
         }
     </script>
 @endsection

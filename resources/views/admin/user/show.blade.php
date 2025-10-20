@@ -64,6 +64,10 @@
                                             Belum Terverifikasi
                                         </span>
                                     @endif
+                                    <span class="badge bg-info text-white px-2 py-1">
+                                        <i class="fas fa-building me-1"></i>
+                                        {{ $user->unit ?? '-' }}
+                                    </span>
                                 </div>
 
                                 <div class="border-top pt-3">

@@ -4,7 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\Document;
+use App\Models\Icon;
+use App\Models\Business;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -106,5 +112,49 @@ class UserController extends Controller
         $user->password = bcrypt($request->new_password);
         $user->save();
         return redirect()->back()->with('success', 'Password berhasil direset.');
+    }
+
+    /**
+     * Download laporan user PDF
+     */
+    public function downloadReport()
+    {
+        // Get current month users
+        $currentMonth = Carbon::now()->startOfMonth();
+        $usersThisMonth = User::where('created_at', '>=', $currentMonth)->get();
+        
+        // Get all users for statistics
+        $allUsers = User::all();
+        
+        // Calculate statistics
+        $totalUsers = $allUsers->count();
+        $usersPerUnit = $allUsers->groupBy('unit')->map->count();
+        
+        // Get user activities
+        $userActivities = $usersThisMonth->map(function ($user) {
+            return [
+                'user' => $user,
+                'posts_count' => Post::where('user_id', $user->id)->count(),
+                'documents_count' => Document::where('user_id', $user->id)->count(),
+                'portals_count' => Icon::where('user_id', $user->id)->count(), // Icons sebagai portal
+                'umkm_approved_count' => Business::where('user_id', $user->id)->where('status', 1)->count(), // UMKM yang dibuat user dan sudah approved
+            ];
+        });
+        
+        $data = [
+            'report_date' => Carbon::now()->format('d F Y'),
+            'current_month' => Carbon::now()->format('F Y'),
+            'total_users' => $totalUsers,
+            'users_per_unit' => $usersPerUnit,
+            'users_this_month' => $usersThisMonth,
+            'user_activities' => $userActivities
+        ];
+        
+        $pdf = PDF::loadView('admin.user.report', $data);
+        $pdf->setPaper('A4', 'portrait');
+        
+        $filename = 'Laporan_User_' . Carbon::now()->format('Y_m_d') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 }

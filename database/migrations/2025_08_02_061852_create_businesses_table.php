@@ -27,12 +27,15 @@ return new class extends Migration
                 'Teknologi'
             ]);
             $table->string('owner', 255);
-            $table->string('alamat', 255);
+            $table->text('input_url')->nullable();
+            $table->string('alamat')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->string('nomor_telepon', 15);
             $table->string('email', 255);
             $table->string('nib', 50);
             $table->text('deskripsi');
-            $table->json('foto')->nullable(); // untuk menyimpan array gambar dalam format JSON
+            $table->string('foto')->nullable(); // untuk menyimpan path gambar sebagai string
             $table->tinyInteger('status')->default(0)->comment('0 untuk pending, 1 untuk approved');
             $table->timestamps();
             

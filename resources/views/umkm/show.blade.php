@@ -176,22 +176,27 @@
 
                 <div class="row mb-3">
                     <div class="col-12">
-                        <div class="umkm-section-title">Lokasi pada Peta</div>
-                        <div class="map-container mb-2">
-                            <div id="map" style="height: 280px; border: 1px solid #e3e6ed; border-radius: 10px;">
+                        <div class="umkm-section-title">Preview Lokasi (Google Maps)</div>
+                        @if ($embed)
+                            <div class="ratio ratio-16x9 mb-2 position-relative"
+                                style="border-radius:10px;overflow:hidden;">
+                                <iframe id="showMapIframe" src="{{ $embed }}" width="100%" height="320"
+                                    style="border:0;" allowfullscreen loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                <div id="showMapClickOverlay" class="position-absolute top-0 start-0 w-100 h-100"
+                                    style="background: transparent; cursor: pointer; z-index: 10;"
+                                    onclick="openOriginalMap()" title="Klik untuk membuka di Google Maps"></div>
                             </div>
-                        </div>
+                        @else
+                            <div class="text-muted">Lokasi tidak tersedia</div>
+                        @endif
                         <small class="text-muted"><i class="fas fa-map-marker-alt"></i> {{ $business->alamat }}</small>
                     </div>
                 </div>
 
-
-
-
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ route('umkm.index') }}" class="btn btn-custom"><i class="fas fa-arrow-left"></i>
                         Kembali</a>
-                    <!-- Button Edit, Approve, dan Reject dihapus sesuai permintaan -->
                 </div>
             </div>
         </div>
@@ -226,56 +231,24 @@
             var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
             imageModal.show();
         }
-        // Initialize map
-        document.addEventListener('DOMContentLoaded', function() {
-            var defaultLat = -6.2088;
-            var defaultLng = 106.8456;
-            var businessAddress = @json($business->alamat);
-            var map = L.map('map').setView([defaultLat, defaultLng], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-            async function geocodeAddress(address) {
-                try {
-                    const response = await fetch(
-                        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
-                    );
-                    const data = await response.json();
-                    if (data && data.length > 0) {
-                        const result = data[0];
-                        const lat = parseFloat(result.lat);
-                        const lng = parseFloat(result.lon);
-                        map.setView([lat, lng], 15);
-                        L.marker([lat, lng])
-                            .addTo(map)
-                            .bindPopup(`<strong>{{ $business->nama }}</strong><br>${address}`)
-                            .openPopup();
-                    } else {
-                        L.marker([defaultLat, defaultLng])
-                            .addTo(map)
-                            .bindPopup(
-                                `<strong>{{ $business->nama }}</strong><br>${address}<br><em>Koordinat perkiraan</em>`
-                            )
-                            .openPopup();
-                    }
-                } catch (error) {
-                    console.error('Geocoding error:', error);
-                    L.marker([defaultLat, defaultLng])
-                        .addTo(map)
-                        .bindPopup(
-                            `<strong>{{ $business->nama }}</strong><br>${address}<br><em>Lokasi tidak dapat diverifikasi</em>`
-                        )
-                        .openPopup();
-                }
-            }
-            if (businessAddress) {
-                geocodeAddress(businessAddress);
+
+        // Fungsi untuk membuka lokasi asli di Google Maps
+        function openOriginalMap() {
+            // Prioritas: input_url → koordinat → alamat → nama
+            var url = @json($business->input_url ?? null);
+            if (url) {
+                window.open(url, '_blank');
+            } else if (@json($business->latitude) && @json($business->longitude)) {
+                var lat = @json($business->latitude);
+                var lng = @json($business->longitude);
+                window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+            } else if (@json($business->alamat)) {
+                var alamat = @json($business->alamat);
+                window.open(`https://www.google.com/maps?q=${encodeURIComponent(alamat)}`, '_blank');
             } else {
-                L.marker([defaultLat, defaultLng])
-                    .addTo(map)
-                    .bindPopup(`<strong>{{ $business->nama }}</strong><br><em>Alamat belum tersedia</em>`)
-                    .openPopup();
+                var nama = @json($business->nama);
+                window.open(`https://www.google.com/maps?q=${encodeURIComponent(nama)}`, '_blank');
             }
-        });
+        }
     </script>
 @endsection

@@ -37,6 +37,7 @@ class IconController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'dropdowns' => 'nullable|array',
             'dropdowns.*.title' => 'nullable|string',
+            'dropdowns.*.icon_dropdown' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'dropdowns.*.link' => 'nullable|string',
         ]);
 
@@ -53,9 +54,15 @@ class IconController extends Controller
 
         // Simpan dropdowns yang terkait
         if ($request->has('dropdowns')) {
-            foreach ($request->input('dropdowns') as $dropdownData) {
+            foreach ($request->input('dropdowns') as $index => $dropdownData) {
+                $iconDropdownPath = null;
+                if ($request->hasFile("dropdowns.$index.icon_dropdown")) {
+                    $originalName = $request->file("dropdowns.$index.icon_dropdown")->getClientOriginalName();
+                    $iconDropdownPath = $request->file("dropdowns.$index.icon_dropdown")->storeAs('dropdown_icons', $originalName, 'public');
+                }
                 Dropdown::create([
                     'title' => $dropdownData['title'] ?? null,
+                    'icon_dropdown' => $iconDropdownPath,
                     'link' => $dropdownData['link'] ?? null,
                     'icon_id' => $icon->id,
                     'user_id' => auth()->id(),
@@ -89,6 +96,7 @@ class IconController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'dropdowns' => 'nullable|array',
             'dropdowns.*.title' => 'nullable|string',
+            'dropdowns.*.icon_dropdown' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'dropdowns.*.link' => 'nullable|string',
         ]);
 
@@ -107,18 +115,47 @@ class IconController extends Controller
         $icon->save();
 
         // Update dropdowns
-        if ($request->has('dropdowns')) {
-            // Hapus dropdowns lama
-            $icon->dropdowns()->delete();
+        $inputDropdowns = $request->input('dropdowns', []);
+        $existingDropdownIds = $icon->dropdowns()->pluck('id')->toArray();
+        $inputIds = [];
 
-            // Simpan dropdowns baru
-            foreach ($request->input('dropdowns') as $dropdownData) {
+        foreach ($inputDropdowns as $key => $dropdownData) {
+            // Jika key adalah id dropdown lama
+            if (is_numeric($key)) {
+                $inputIds[] = (int)$key;
+                $dropdown = Dropdown::find($key);
+                if ($dropdown) {
+                    // Update data lama
+                    $dropdown->title = $dropdownData['title'] ?? $dropdown->title;
+                    $dropdown->link = $dropdownData['link'] ?? $dropdown->link;
+                    // Update icon_dropdown jika ada file baru
+                    if ($request->hasFile("dropdowns.$key.icon_dropdown")) {
+                        $originalName = $request->file("dropdowns.$key.icon_dropdown")->getClientOriginalName();
+                        $iconDropdownPath = $request->file("dropdowns.$key.icon_dropdown")->storeAs('dropdown_icons', $originalName, 'public');
+                        $dropdown->icon_dropdown = $iconDropdownPath;
+                    }
+                    $dropdown->save();
+                }
+            } else if (str_starts_with($key, 'new_')) {
+                // Dropdown baru
+                $iconDropdownPath = null;
+                if ($request->hasFile("dropdowns.$key.icon_dropdown")) {
+                    $originalName = $request->file("dropdowns.$key.icon_dropdown")->getClientOriginalName();
+                    $iconDropdownPath = $request->file("dropdowns.$key.icon_dropdown")->storeAs('dropdown_icons', $originalName, 'public');
+                }
                 Dropdown::create([
                     'title' => $dropdownData['title'] ?? null,
+                    'icon_dropdown' => $iconDropdownPath,
                     'link' => $dropdownData['link'] ?? null,
                     'icon_id' => $icon->id,
                 ]);
             }
+        }
+
+        // Hapus dropdown yang dihapus oleh user
+        $dropdownsToDelete = array_diff($existingDropdownIds, $inputIds);
+        if (!empty($dropdownsToDelete)) {
+            Dropdown::whereIn('id', $dropdownsToDelete)->delete();
         }
 
         return redirect()->route('icon.index')->with('success', 'Icon and Dropdowns updated successfully.');

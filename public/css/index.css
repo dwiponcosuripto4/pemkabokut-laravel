@@ -203,8 +203,6 @@
     display: none; /* Tersembunyi secara default */
     z-index: 10; /* Pastikan muncul di atas elemen lain */
     margin-top: -20px; /* Menghilangkan jarak tambahan */
-    column-count: 3; /* Bagi konten menjadi 3 kolom */
-    column-gap: 20px; /* Jarak antar kolom */
 }
 
 /* Styling khusus untuk submenu UMKM */
@@ -212,6 +210,20 @@
     column-count: 1; /* Gunakan 1 kolom untuk UMKM */
     max-height: 400px; /* Batasi tinggi maksimal */
     overflow-y: auto; /* Tambahkan scroll jika konten terlalu panjang */
+}
+
+/* Override grid layout untuk UMKM karena menggunakan struktur berbeda */
+#iconMenuumkm ul {
+    display: block !important; /* Override grid untuk UMKM */
+    grid-template-columns: none !important;
+    gap: 0 !important;
+}
+
+#iconMenuumkm ul li {
+    display: block !important;
+    margin-bottom: 0;
+    border-bottom: 1px solid #f1f3f4;
+    padding: 0;
 }
 
 /* Styling khusus untuk list UMKM */
@@ -224,10 +236,7 @@
 
 #iconMenuumkm .submenu-collapse ul li,
 #iconMenuumkm ul li {
-    margin-bottom: 0;
-    break-inside: avoid; /* Hindari pemecahan item antar kolom */
     width: 100%;
-    border-bottom: 1px solid #f1f3f4;
 }
 
 #iconMenuumkm .submenu-collapse ul li:last-child,
@@ -241,6 +250,82 @@
     background-color: #f8f9fa;
     border-radius: 6px;
     margin: 10px 0;
+}
+
+/* Responsive design untuk submenu grid */
+@media (max-width: 768px) {
+    .submenu-collapse {
+        width: 95vw; /* Gunakan hampir seluruh lebar layar pada mobile */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .submenu-collapse ul {
+        grid-template-columns: repeat(
+            2,
+            1fr
+        ); /* 2 kolom pada tablet/mobile besar */
+        gap: 10px 15px;
+    }
+}
+
+/* Mobile portrait: make carousel slides full viewport height and crop images (object-fit: cover) */
+@media (max-width: 767px) and (orientation: portrait) {
+    /* Ensure the search section fills the viewport on mobile portrait */
+    #search-section {
+        height: 100vh;
+        min-height: 100vh;
+    }
+
+    /* Make carousel wrapper and items full viewport height */
+    #carouselExampleSlidesOnly,
+    #carouselExampleSlidesOnly .carousel-inner,
+    #carouselExampleSlidesOnly .carousel-item {
+        height: 100vh;
+    }
+
+    /* Crop images instead of stretching */
+    #carouselExampleSlidesOnly .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+    }
+
+    /* Keep overlay and content positioned above the carousel */
+    #search-section > div[style] {
+        height: 100vh; /* overlay divs use inline style; ensure they match */
+    }
+
+    /* Slight adjustment to search form and icon section for mobile portrait */
+    .search-form {
+        width: 90%;
+    }
+
+    .icon-section {
+        max-width: 92%;
+    }
+}
+
+@media (max-width: 480px) {
+    .submenu-collapse ul {
+        grid-template-columns: 1fr; /* 1 kolom pada mobile kecil */
+        gap: 8px;
+    }
+
+    .submenu-collapse ul li a {
+        font-size: 13px;
+    }
+}
+
+/* Style untuk icon dropdown dalam submenu */
+.submenu-collapse ul li img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid #e9ecef;
 }
 
 /* Tampilkan submenu ketika kelas show ditambahkan */
@@ -269,20 +354,42 @@
     list-style-type: none;
     padding-left: 0;
     text-align: left;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom dengan lebar sama */
+    gap: 15px 20px; /* Gap vertikal 15px, horizontal 20px */
+    width: 100%;
 }
 
 .submenu-collapse ul li {
-    margin-bottom: 20px;
-    column-gap: 20px;
+    margin-bottom: 0; /* Reset margin bottom karena menggunakan grid gap */
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    break-inside: avoid;
+}
+
+.submenu-collapse ul li:last-child,
+.submenu-collapse ul li:nth-last-child(2),
+.submenu-collapse ul li:nth-last-child(3) {
+    border-bottom: none; /* Hilangkan border untuk 3 item terakhir */
 }
 
 .submenu-collapse ul li a {
     color: #00276aff;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.3;
 }
 
 .submenu-collapse ul li a:hover {
     text-decoration: underline;
+    color: #0056b3;
 }
 
 #pengumuman-section {

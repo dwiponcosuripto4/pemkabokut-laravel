@@ -26,12 +26,11 @@
             <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ URL::asset('/icons/logo_horisontal.png') }}" height="60" alt="" />
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu"
+                aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link active text-white" aria-current="page" href="{{ url('/') }}">Beranda</a>
@@ -56,7 +55,7 @@
                                         @foreach ($category->headlines as $headline)
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ url('/headline/show/' . $headline->id) }}">{{ $headline->title }}</a>
+                                                    href="{{ url('/headlines/show/' . $headline->id) }}">{{ $headline->title }}</a>
                                             </li>
                                         @endforeach
                                     @endif
@@ -110,6 +109,86 @@
             </div>
         </div>
     </nav>
+    {{-- Offcanvas Mobile Menu --}}
+    <div class="offcanvas offcanvas-end offcanvas-mobile" tabindex="-1" id="mobileMenu"
+        aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ URL::asset('/icons/logo_horisontal.png') }}" height="50" alt="" />
+            </a>
+            <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="mobile-nav">
+                <ul class="list-unstyled mb-3">
+                    <li class="mb-2"><a href="{{ url('/') }}" class="mobile-nav-link">Beranda</a></li>
+                    @foreach ($categories as $category)
+                        <li class="mb-2">
+                            @php $hasChildren = ($category->id == 6 || $category->id == 7) || ($category->id == 8 && ($category->headlines && $category->headlines->count())) || ($category->posts && $category->posts->count()); @endphp
+                            @if ($hasChildren)
+                                <button class="btn btn-toggle mobile-toggle w-100 text-start text-white"
+                                    type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-cat-{{ $category->id }}" aria-expanded="false">
+                                    {{ $category->title }}
+                                    <i class="bi bi-chevron-down ms-2 toggle-icon"></i>
+                                </button>
+                                <div class="collapse" id="collapse-cat-{{ $category->id }}">
+                                    <ul class="list-unstyled ps-3 mt-2">
+                                        @if ($category->id == 6 || $category->id == 7)
+                                            @foreach ($category->data as $dataItem)
+                                                <li class="mb-1"><a class="mobile-sub-link"
+                                                        href="{{ url('/data/show/' . $dataItem->id) }}">{{ $dataItem->title }}</a>
+                                                </li>
+                                            @endforeach
+                                        @elseif ($category->id == 8)
+                                            @if ($category->headlines)
+                                                @foreach ($category->headlines as $headline)
+                                                    <li class="mb-1"><a class="mobile-sub-link"
+                                                            href="{{ url('/headlines/show/' . $headline->id) }}">{{ $headline->title }}</a>
+                                                    </li>
+                                                @endforeach
+                                            @endif
+                                            @foreach ($category->posts as $post)
+                                                <li class="mb-1"><a class="mobile-sub-link"
+                                                        href="{{ url('/post/show/' . $post->id) }}">{{ $post->title }}</a>
+                                                </li>
+                                            @endforeach
+                                        @else
+                                            @foreach ($category->posts as $post)
+                                                <li class="mb-1"><a class="mobile-sub-link"
+                                                        href="{{ url('/post/show/' . $post->id) }}">{{ $post->title }}</a>
+                                                </li>
+                                            @endforeach
+                                        @endif
+                                    </ul>
+                                </div>
+                            @else
+                                <a class="mobile-nav-link" href="#">{{ $category->title }}</a>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+
+                <div class="mobile-admin">
+                    <div class="mb-2">
+                        <a class="btn btn-light w-100" href="{{ url('/post/show/36') }}">Kebijakan Privasi</a>
+                    </div>
+                    @auth
+                        <div class="mb-2"><a class="btn btn-secondary w-100" href="{{ url('admin/dashboard') }}">Admin
+                                Dashboard</a></div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-light w-100">Logout</button>
+                        </form>
+                    @else
+                        <div class="mb-2"><a class="btn btn-secondary w-100" href="{{ url('/login') }}">Admin
+                                Login</a></div>
+                    @endauth
+                </div>
+            </nav>
+        </div>
+    </div>
     {{-- Navbar --}}
 
     <div class="container-fluid py-0">
@@ -147,6 +226,7 @@
     <!-- Owl Carousel JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     @stack('scripts')
+
 </body>
 
 </html>

@@ -44,7 +44,10 @@ class Business extends Model
         'nama',
         'jenis',
         'owner',
+        'input_url',
         'alamat',
+        'latitude',
+        'longitude',
         'nomor_telepon',
         'email',
         'nib',
@@ -56,7 +59,8 @@ class Business extends Model
 
     protected $casts = [
         'status' => 'integer',
-        'foto' => 'array',
+        'latitude' => 'float',
+        'longitude' => 'float'
     ];
 
     public function user()

@@ -169,4 +169,34 @@ class DocumentController extends Controller
         // Jika dokumen ditemukan, kirim ke view admin
         return view('admin.document.show', compact('document'));
     }
+
+    public function downloadDocumentReport()
+    {
+        // Menggunakan DomPDF
+        $pdf = app('dompdf.wrapper');
+
+        // Hitung statistik dokumen
+        $totalDocuments = Document::count();
+        $totalData = Data::count(); 
+        $totalFiles = File::count();
+
+        // Ambil semua dokumen dengan relasi untuk tabel
+        $documents = Document::with(['data', 'user', 'file'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Generate PDF dengan view yang akan kita buat
+        $pdf->loadView('admin.document.report', compact(
+            'totalDocuments', 
+            'totalData', 
+            'totalFiles',
+            'documents'
+        ));
+
+        // Set paper size dan orientasi
+        $pdf->setPaper('A4', 'portrait');
+
+        // Download PDF dengan nama file yang sesuai
+        return $pdf->download('Laporan_Dokumen_' . date('Y-m-d_H-i-s') . '.pdf');
+    }
 }

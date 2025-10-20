@@ -6,8 +6,8 @@
     <style>
         #postsTable th:nth-child(5),
         #postsTable td:nth-child(5) {
-            width: 120px;
-            max-width: 120px;
+            width: 140px;
+            max-width: 140px;
             white-space: nowrap;
         }
 
@@ -248,6 +248,11 @@
                     <a href="/admin/post/create" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus me-2"></i>Add Post
                     </a>
+
+                    <!-- Report Button -->
+                    <button class="btn btn-danger btn-sm" onclick="downloadPostReport()" title="Download Laporan PDF">
+                        <i class="fas fa-file-pdf me-1"></i>Laporan
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -268,8 +273,8 @@
                                 <th width="17%">Image</th>
                                 <th width="25%">Title</th>
                                 <th width="10%">Author</th>
-                                <th width="3%">Category</th>
-                                <th width="12%">Headline</th>
+                                <th width="5%">Category</th>
+                                <th width="10%">Headline</th>
                                 <th width="5%">Published</th>
                                 <th width="10%">Updated At</th>
                                 <th width="5%">Actions</th>
@@ -785,6 +790,39 @@ if (str_starts_with($imageUrl, 'http')) {
             toastElement.addEventListener('hidden.bs.toast', () => {
                 toastElement.remove();
             });
+        }
+
+        // Download Post Report Function
+        function downloadPostReport() {
+            const loadingBtn = event.target;
+            const originalContent = loadingBtn.innerHTML;
+
+            // Show loading state
+            loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+            loadingBtn.disabled = true;
+
+            // Create form to download PDF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/posts/report';
+            form.style.display = 'none';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+
+            // Reset button after delay
+            setTimeout(() => {
+                loadingBtn.innerHTML = originalContent;
+                loadingBtn.disabled = false;
+                document.body.removeChild(form);
+            }, 3000);
         }
     </script>
 @endsection

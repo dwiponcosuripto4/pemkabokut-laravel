@@ -525,9 +525,711 @@
             }
         }
     </style>
+
+    <!-- Modern Form Styles -->
+    <style>
+        /* Modern Header */
+        .modern-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .modern-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-right: 20px;
+            opacity: 0.9;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .header-decoration {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        }
+
+        /* Modern Form Card */
+        .modern-form-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            border: 1px solid #f0f0f0;
+        }
+
+        .modern-form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 30px;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-right: 12px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .form-grid.two-columns {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Modern Form Groups */
+        .form-group-modern {
+            position: relative;
+        }
+
+        .form-group-modern.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Modern Labels */
+        .modern-label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-label i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+
+        /* Input Wrapper */
+        .input-wrapper {
+            position: relative;
+        }
+
+        /* Modern Inputs */
+        .modern-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .modern-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-border {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .modern-input:focus+.input-border {
+            width: 100%;
+        }
+
+        /* Select Wrapper */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .modern-select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .modern-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Image Upload Area */
+        .image-upload-area {
+            position: relative;
+        }
+
+        .upload-zone {
+            border: 3px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            transform: translateY(-2px);
+        }
+
+        .upload-zone:hover::before {
+            left: 100%;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-text h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0 0 8px 0;
+        }
+
+        .upload-text p {
+            color: #718096;
+            margin: 0 0 10px 0;
+        }
+
+        .upload-text small {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        .btn-add-image {
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Image Preview Grid */
+        .image-preview-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .file-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            max-width: 100%;
+        }
+
+        .file-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .file-item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* Image size variants untuk kontrol ukuran */
+        .file-item.small img {
+            max-width: 150px;
+        }
+
+        .file-item.medium img {
+            max-width: 250px;
+        }
+
+        .file-item.large img {
+            max-width: 350px;
+        }
+
+        /* Image info tooltip */
+        .image-info {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .file-item:hover .image-info {
+            opacity: 1;
+        }
+
+        .remove-file-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remove-file-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        /* Editor Wrapper */
+        .editor-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .editor-wrapper:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Submit Section */
+        .submit-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .submit-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .btn-draft {
+            padding: 14px 28px;
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-draft:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-publish {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Error Messages */
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            padding: 8px 12px;
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 6px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Select2 Modern Styling */
+        .select2-container--default .select2-selection--single {
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            height: 52px !important;
+            padding: 8px 16px !important;
+            font-size: 16px !important;
+            background: #fff !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #2d3748 !important;
+            line-height: 36px !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 48px !important;
+            right: 12px !important;
+        }
+
+        .select2-dropdown {
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            margin-top: 4px !important;
+        }
+
+        .select2-results__option {
+            padding: 12px 16px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .select2-results__option--highlighted[aria-selected] {
+            background: #667eea !important;
+        }
+
+        /* Input focus states */
+        .input-wrapper.focused .input-border {
+            width: 100%;
+        }
+
+        /* Animation improvements */
+        .modern-input,
+        .modern-select {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .modern-input:hover,
+        .modern-select:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        /* Loading states */
+        .btn-publish.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-publish.loading::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Success states */
+        .input-success {
+            border-color: #48bb78 !important;
+        }
+
+        .input-warning {
+            border-color: #ffa500 !important;
+        }
+
+        .input-error {
+            border-color: #ff6b6b !important;
+        }
+
+        /* Drag over state */
+        .upload-zone.drag-over {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Character Counter */
+        .char-counter {
+            position: absolute;
+            right: 12px;
+            bottom: -24px;
+            font-size: 11px;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .char-counter.text-warning {
+            color: #ffa500 !important;
+        }
+
+        .char-counter.text-danger {
+            color: #ff6b6b !important;
+        }
+
+        /* Form section animations */
+        .form-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        /* Tooltip enhancements */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3748;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+        }
+
+        /* Progress indicator */
+        .form-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #f0f0f0;
+            z-index: 1001;
+        }
+
+        .form-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modern-header {
+                padding: 25px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-icon {
+                margin: 0 0 15px 0;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .modern-form-card {
+                padding: 25px;
+            }
+
+            .form-grid.two-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .submit-buttons {
+                flex-direction: column;
+            }
+
+            .submit-buttons button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Image preview responsive */
+            .image-preview-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .file-item img {
+                max-width: 100% !important;
+                width: 100%;
+            }
+
+            .file-item {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Form Progress Indicator -->
+    <div class="form-progress">
+        <div class="form-progress-bar" id="formProgress"></div>
+    </div>
+
     <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle-btn" id="sidebarToggle">
         <i class="fas fa-bars"></i>
@@ -634,73 +1336,180 @@
         <div class="page-content form-container">
             <div class="container">
                 <div class="row justify-content-md-center">
-                    <div class="col-md-10 col-centered">
-                        <div class="text-center" style="margin-bottom: 40px;">
-                            <h1>Create a New Post</h1>
+                    <div class="col-md-11">
+                        <!-- Header Section -->
+                        <div class="modern-header">
+                            <div class="header-content">
+                                <div class="header-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="header-text">
+                                    <h1 class="header-title">Create New Post</h1>
+                                    <p class="header-subtitle">Membuat postingan berita untuk masyarakat</p>
+                                </div>
+                            </div>
+                            <div class="header-decoration"></div>
                         </div>
-                        <form id="create-post-form" action="{{ route('post.store') }}" method="post"
-                            enctype="multipart/form-data" novalidate>
-                            @csrf
-                            <div class="form-group" style="margin-bottom: 25px;">
-                                <label for="title">Title:</label>
-                                <input type="text" class="form-control" name="title" id="title"
-                                    placeholder="Enter the title">
-                                <div id="title-error" class="text-danger" style="margin-top:5px;display:none;"></div>
-                            </div>
 
-                            <div class="form-group" style="margin-bottom: 25px;">
-                                <label for="category_id">Category:</label>
-                                <select name="category_id" class="form-control" id="category-select">
-                                    <option value="">-- Select Category --</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
-                                    @endforeach
-                                </select>
-                                <div id="category-error" class="text-danger" style="margin-top:5px;display:none;">
-                                </div>
-                            </div>
+                        <!-- Form Card -->
+                        <div class="modern-form-card">
+                            <form id="create-post-form" action="{{ route('post.store') }}" method="post"
+                                enctype="multipart/form-data" novalidate>
+                                @csrf
 
-                            <div class="form-group" style="margin-bottom: 25px;">
-                                <label for="headline_id">Headline:</label>
-                                <select name="headline_id" class="form-control" id="headline-select">
-                                    <option value="">-- Select Headline --</option>
-                                    @foreach ($headlines as $headline)
-                                        <option value="{{ $headline->id }}">{{ $headline->title }}</option>
-                                    @endforeach
-                                </select>
-                                <div id="headline-error" class="text-danger" style="margin-top:5px;display:none;">
-                                </div>
-                            </div>
-
-                            <!-- Bagian ini menampilkan input gambar dan tombol Add -->
-                            <div class="d-flex" style="margin-bottom: 15px;">
-                                <div class="me-2" style="flex: 1;">
-                                    <label for="image" class="form-label">Images:</label>
-                                    <input type="file" class="form-control" name="images[]" id="image-upload"
-                                        multiple>
+                                <!-- Form Row 1: Title -->
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-heading section-icon"></i>
+                                        <h3 class="section-title">Post Information</h3>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group-modern full-width">
+                                            <div class="input-wrapper">
+                                                <label for="title" class="modern-label">
+                                                    <i class="fas fa-pen"></i>
+                                                    Title
+                                                </label>
+                                                <input type="text" class="modern-input" name="title"
+                                                    id="title"
+                                                    placeholder="Enter an engaging title for your post">
+                                                <div class="input-border"></div>
+                                            </div>
+                                            <div id="title-error" class="error-message"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Tombol untuk menambahkan gambar -->
-                                <button type="button" id="add-image-btn" class="btn btn-default"
-                                    style="margin-top: 25px;">Add Image</button>
-                            </div>
+                                <!-- Form Row 2: Category & Headline -->
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-tags section-icon"></i>
+                                        <h3 class="section-title">Classification</h3>
+                                    </div>
+                                    <div class="form-grid two-columns">
+                                        <div class="form-group-modern">
+                                            <div class="select-wrapper">
+                                                <label for="category_id" class="modern-label">
+                                                    <i class="fas fa-folder"></i>
+                                                    Category
+                                                </label>
+                                                <select name="category_id" class="modern-select"
+                                                    id="category-select">
+                                                    <option value="">Choose a category</option>
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}">{{ $category->title }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div id="category-error" class="error-message"></div>
+                                        </div>
 
-                            <div id="image-preview" style="margin-top: 15px;"></div>
+                                        <div class="form-group-modern">
+                                            <div class="select-wrapper">
+                                                <label for="headline_id" class="modern-label">
+                                                    <i class="fas fa-star"></i>
+                                                    Headline
+                                                </label>
+                                                <select name="headline_id" class="modern-select"
+                                                    id="headline-select">
+                                                    <option value="">Choose a headline</option>
+                                                    @foreach ($headlines as $headline)
+                                                        <option value="{{ $headline->id }}">{{ $headline->title }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div id="headline-error" class="error-message"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div style="margin-bottom: 25px;">
-                                <label for="description">Description:</label>
-                                <textarea name="description" id="description" cols="30" rows="10"></textarea>
-                            </div>
+                                <!-- Form Row 3: Images -->
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-images section-icon"></i>
+                                        <h3 class="section-title">Media Gallery</h3>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="image-upload-area">
+                                            <div class="upload-zone"
+                                                onclick="document.getElementById('image-upload').click()">
+                                                <div class="upload-icon">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                </div>
+                                                <div class="upload-text">
+                                                    <h4>Click to upload images</h4>
+                                                    <p>or drag and drop your files here</p>
+                                                    <small>Supports: JPG, PNG, GIF (Max: 5MB each)</small>
+                                                </div>
+                                                <input type="file" class="hidden-input" name="images[]"
+                                                    id="image-upload" multiple>
+                                            </div>
+                                            <button type="button" id="add-image-btn" class="btn-add-image">
+                                                <i class="fas fa-plus"></i>
+                                                Add More Images
+                                            </button>
+                                        </div>
+                                        <div id="image-preview" class="image-preview-grid"></div>
+                                    </div>
+                                </div>
 
-                            <div class="form-group" style="margin-bottom: 25px;">
-                                <label for="published_at">Tanggal publish:</label>
-                                <input type="datetime-local" class="form-control" name="published_at"
-                                    id="published_at" value="{{ date('Y-m-d\TH:i') }}"
-                                    placeholder="YYYY-MM-DDTHH:MM">
-                            </div>
+                                <!-- Form Row 4: Content -->
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-edit section-icon"></i>
+                                        <h3 class="section-title">Content</h3>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group-modern full-width">
+                                            <label for="description" class="modern-label">
+                                                <i class="fas fa-align-left"></i>
+                                                Description
+                                            </label>
+                                            <div class="editor-wrapper">
+                                                <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
-                        </form>
+                                <!-- Form Row 5: Publish Settings -->
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-calendar-alt section-icon"></i>
+                                        <h3 class="section-title">Publish Settings</h3>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group-modern">
+                                            <div class="input-wrapper">
+                                                <label for="published_at" class="modern-label">
+                                                    <i class="fas fa-clock"></i>
+                                                    Publish Date & Time
+                                                </label>
+                                                <input type="datetime-local" class="modern-input" name="published_at"
+                                                    id="published_at" value="{{ date('Y-m-d\TH:i') }}">
+                                                <div class="input-border"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Section -->
+                                <div class="submit-section">
+                                    <div class="submit-buttons">
+                                        <button type="button" class="btn-draft">
+                                            <i class="fas fa-save"></i>
+                                            Save as Draft
+                                        </button>
+                                        <button type="submit" class="btn-publish">
+                                            <i class="fas fa-rocket"></i>
+                                            Publish Post
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -709,32 +1518,38 @@
 
     <script>
         $(document).ready(function() {
-            // Validasi form
+            // Validasi form dengan styling baru
             $('#create-post-form').on('submit', function(e) {
                 let valid = true;
+
+                // Reset all error messages
+                $('.error-message').removeClass('show').hide();
+
                 // Title required
                 const title = $('#title').val().trim();
                 if (!title) {
-                    $('#title-error').text('Title wajib diisi.').show();
+                    $('#title-error').text('Title wajib diisi.').addClass('show').show();
+                    $('#title').focus();
                     valid = false;
-                } else {
-                    $('#title-error').hide();
                 }
 
                 // Minimal salah satu category atau headline harus dipilih
                 const category = $('#category-select').val();
                 const headline = $('#headline-select').val();
                 if (!category && !headline) {
-                    $('#category-error').text('Pilih minimal salah satu Category atau Headline.').show();
-                    $('#headline-error').text('Pilih minimal salah satu Category atau Headline.').show();
+                    $('#category-error').text('Pilih minimal salah satu Category atau Headline.').addClass(
+                        'show').show();
+                    $('#headline-error').text('Pilih minimal salah satu Category atau Headline.').addClass(
+                        'show').show();
                     valid = false;
-                } else {
-                    $('#category-error').hide();
-                    $('#headline-error').hide();
                 }
 
                 if (!valid) {
                     e.preventDefault();
+                    // Smooth scroll to first error
+                    $('html, body').animate({
+                        scrollTop: $('.error-message.show:first').offset().top - 100
+                    }, 500);
                 }
             });
             // Sidebar toggle functionality
@@ -754,59 +1569,169 @@
                 }
             });
 
-            // Initialize Summernote
+            // Initialize Summernote dengan kustomisasi untuk styling modern
             $('#description').summernote({
-                placeholder: 'description...',
+                placeholder: 'Write your post content here...',
                 tabsize: 2,
-                height: 300
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
             });
 
-            // Initialize Select2 for the category select
+            // Initialize Select2 dengan styling modern
             $('#category-select').select2({
-                placeholder: "-- Select Category --",
-                allowClear: true
+                placeholder: "Choose a category",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'modern-dropdown'
             });
 
-            // Initialize Select2 for the headline select
             $('#headline-select').select2({
-                placeholder: "-- Select Headline --",
-                allowClear: true
+                placeholder: "Choose a headline",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'modern-dropdown'
+            });
+
+            // Input animations dan interactions
+            $('.modern-input, .modern-select').on('focus', function() {
+                $(this).parent().addClass('focused');
+            }).on('blur', function() {
+                if (!$(this).val()) {
+                    $(this).parent().removeClass('focused');
+                }
+            });
+
+            // Real-time validation feedback
+            $('#title').on('input', function() {
+                const value = $(this).val().trim();
+                const errorDiv = $('#title-error');
+
+                if (value.length === 0) {
+                    errorDiv.text('Title is required').addClass('show').show();
+                    $(this).css('border-color', '#ff6b6b');
+                } else if (value.length < 10) {
+                    errorDiv.text('Title should be at least 10 characters').addClass('show').show();
+                    $(this).css('border-color', '#ffa500');
+                } else {
+                    errorDiv.removeClass('show').hide();
+                    $(this).css('border-color', '#48bb78');
+                }
+            });
+
+            // Drag and drop functionality for image upload
+            const uploadZone = document.querySelector('.upload-zone');
+
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+                this.style.borderColor = '#667eea';
+                this.style.background = 'linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%)';
+            });
+
+            uploadZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                this.style.borderColor = '#cbd5e0';
+                this.style.background = 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)';
+            });
+
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                this.style.borderColor = '#cbd5e0';
+                this.style.background = 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)';
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    updateImagePreview(files);
+                }
             });
 
             const imageInput = document.getElementById('image-upload');
             const imagePreviewContainer = document.getElementById('image-preview');
             let selectedImages = new DataTransfer();
 
-            // Fungsi untuk memperbarui pratinjau gambar
+            // Fungsi untuk memperbarui pratinjau gambar dengan ukuran asli
             function updateImagePreview(files) {
                 Array.from(files).forEach((file, index) => {
                     const imageItem = document.createElement('div');
                     imageItem.classList.add('file-item');
 
                     const imageElement = document.createElement('img');
-                    imageElement.src = URL.createObjectURL(file);
-                    imageElement.width = 150;
-                    imageElement.classList.add('me-2');
+                    const objectUrl = URL.createObjectURL(file);
+                    imageElement.src = objectUrl;
+
+                    // Biarkan gambar tampil dengan ukuran asli (dengan batas maksimal)
+                    imageElement.style.maxWidth = '300px';
+                    imageElement.style.height = 'auto';
+                    imageElement.style.display = 'block';
+                    imageElement.style.borderRadius = '12px';
+
+                    // Tambahkan info gambar
+                    const imageInfo = document.createElement('div');
+                    imageInfo.classList.add('image-info');
+
+                    // Format ukuran file
+                    const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+                    if (file.size > 1024 * 1024) {
+                        fileSize = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+                    }
+
+                    imageInfo.innerHTML = `${file.name}<br>${fileSize}`;
+
+                    // Load gambar untuk mendapatkan dimensi asli
+                    imageElement.onload = function() {
+                        const dimensions = `${this.naturalWidth}×${this.naturalHeight}`;
+                        imageInfo.innerHTML = `${file.name}<br>${fileSize} • ${dimensions}px`;
+                    };
 
                     const removeBtn = document.createElement('button');
                     removeBtn.classList.add('remove-file-btn');
-                    removeBtn.textContent = 'X';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.type = 'button';
 
                     // Hapus gambar ketika tombol X diklik
-                    removeBtn.addEventListener('click', function() {
-                        imageItem.remove();
-                        selectedImages.items.remove(index);
-                        imageInput.files = selectedImages.files;
+                    removeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        imageItem.style.opacity = '0';
+                        imageItem.style.transform = 'scale(0.8)';
 
-                        if (selectedImages.items.length === 0) {
-                            imageInput.value = ''; // Reset input jika tidak ada gambar
-                        }
+                        setTimeout(() => {
+                            imageItem.remove();
+                            selectedImages.items.remove(index);
+                            imageInput.files = selectedImages.files;
+
+                            if (selectedImages.items.length === 0) {
+                                imageInput.value = '';
+                            }
+                            // Clean up object URL
+                            URL.revokeObjectURL(objectUrl);
+                        }, 200);
                     });
 
                     imageItem.appendChild(imageElement);
+                    imageItem.appendChild(imageInfo);
                     imageItem.appendChild(removeBtn);
                     imagePreviewContainer.appendChild(imageItem);
                     selectedImages.items.add(file);
+
+                    // Animation for new items
+                    imageItem.style.opacity = '0';
+                    imageItem.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        imageItem.style.transition = 'all 0.3s ease';
+                        imageItem.style.opacity = '1';
+                        imageItem.style.transform = 'scale(1)';
+                    }, 50);
                 });
 
                 imageInput.files = selectedImages.files;
@@ -891,6 +1816,122 @@
             $('#pendingBusinessNotification').on('click', function() {
                 loadPendingBusinesses();
             });
+
+            // Enhanced form submission with loading states
+            $('#create-post-form').on('submit', function(e) {
+                const submitBtn = $('.btn-publish');
+                const originalText = submitBtn.html();
+
+                // Add loading state
+                submitBtn.addClass('loading')
+                    .html('<i class="fas fa-spinner fa-spin"></i> Publishing...')
+                    .prop('disabled', true);
+
+                // If validation passes, keep the loading state
+                // The form will submit naturally
+                setTimeout(() => {
+                    if (!e.isDefaultPrevented()) {
+                        return; // Let the form submit
+                    } else {
+                        // If validation failed, restore button
+                        submitBtn.removeClass('loading')
+                            .html(originalText)
+                            .prop('disabled', false);
+                    }
+                }, 100);
+            });
+
+            // Save as draft functionality
+            $('.btn-draft').on('click', function() {
+                const btn = $(this);
+                const originalText = btn.html();
+
+                btn.html('<i class="fas fa-spinner fa-spin"></i> Saving Draft...')
+                    .prop('disabled', true);
+
+                // Add draft field to form
+                const draftInput = $('<input type="hidden" name="save_as_draft" value="1">');
+                $('#create-post-form').append(draftInput);
+
+                // Submit form
+                $('#create-post-form').submit();
+            });
+
+            // Auto-save draft functionality (optional)
+            let autoSaveTimeout;
+            $('#title, #description').on('input', function() {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(function() {
+                    // Auto-save logic here (optional)
+                    console.log('Auto-saving draft...');
+                }, 5000); // Save after 5 seconds of inactivity
+            });
+
+            // Character counter for title
+            $('#title').on('input', function() {
+                const current = $(this).val().length;
+                const max = 255; // Assuming max title length
+                const remaining = max - current;
+
+                let counterHtml =
+                    `<small class="char-counter ${remaining < 20 ? 'text-warning' : ''} ${remaining < 0 ? 'text-danger' : ''}">${current}/${max} characters</small>`;
+
+                // Remove existing counter
+                $(this).parent().find('.char-counter').remove();
+
+                // Add counter
+                $(this).parent().append(counterHtml);
+            });
+
+            // Smooth animations for form sections
+            $('.form-section').each(function(index) {
+                $(this).css({
+                    'opacity': '0',
+                    'transform': 'translateY(20px)'
+                });
+
+                setTimeout(() => {
+                    $(this).css({
+                        'transition': 'all 0.6s ease',
+                        'opacity': '1',
+                        'transform': 'translateY(0)'
+                    });
+                }, index * 100);
+            });
+
+            // Form progress tracking
+            function updateProgress() {
+                let filledFields = 0;
+                let totalFields = 4; // title, category/headline, description, publish_date
+
+                // Check title
+                if ($('#title').val().trim()) filledFields++;
+
+                // Check category or headline
+                if ($('#category-select').val() || $('#headline-select').val()) filledFields++;
+
+                // Check description
+                if ($('#description').summernote('code').trim() && $('#description').summernote('code') !==
+                    '<p><br></p>') filledFields++;
+
+                // Check publish date
+                if ($('#published_at').val()) filledFields++;
+
+                const percentage = (filledFields / totalFields) * 100;
+                $('#formProgress').css('width', percentage + '%');
+            }
+
+            // Track progress on input changes
+            $('#title, #published_at').on('input', updateProgress);
+            $('#category-select, #headline-select').on('change', updateProgress);
+            $('#description').on('summernote.change', updateProgress);
+
+            // Initial progress check
+            setTimeout(updateProgress, 1000);
+
+            // Add tooltips to buttons
+            $('.btn-publish').attr('data-tooltip', 'Publish your post immediately');
+            $('.btn-draft').attr('data-tooltip', 'Save as draft for later editing');
         });
     </script>
 </body>

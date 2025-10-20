@@ -115,6 +115,11 @@
                                         <i class="fas fa-times"></i> Clear
                                     </a>
                                 @endif
+
+                                <!-- Report Button -->
+                                <button type="button" class="btn btn-success btn-sm" onclick="downloadBusinessReport()">
+                                    <i class="fas fa-file-pdf me-1"></i>Laporan
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -174,7 +179,8 @@
                                                                 alt="User" class="rounded-circle me-2" width="32"
                                                                 height="32">
                                                             <div>
-                                                                <div class="fw-medium">{{ $user->name ?? 'Unknown' }}</div>
+                                                                <div class="fw-medium">{{ $user->name ?? 'Unknown' }}
+                                                                </div>
                                                                 <small class="text-muted">ID:
                                                                     {{ $user->id ?? '-' }}</small>
                                                             </div>
@@ -369,5 +375,38 @@
                 }
             });
         });
+
+        // Download Business Report Function
+        function downloadBusinessReport() {
+            const loadingBtn = event.target;
+            const originalContent = loadingBtn.innerHTML;
+
+            // Show loading state
+            loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+            loadingBtn.disabled = true;
+
+            // Create form to download PDF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/businesses/report';
+            form.style.display = 'none';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+
+            // Reset button after delay
+            setTimeout(() => {
+                loadingBtn.innerHTML = originalContent;
+                loadingBtn.disabled = false;
+                document.body.removeChild(form);
+            }, 3000);
+        }
     </script>
 @endsection

@@ -109,11 +109,18 @@
                         <div class="portal-title">
                             <p class="text-center text-white">{{ $icon->title }}</p>
                         </div>
-                        <!-- Submenu Collapse -->
+                        <!-- Portal Submenu Collapse -->
                         <div id="iconMenu{{ $icon->id }}" class="submenu-collapse">
                             <ul>
                                 @foreach ($icon->dropdowns as $dropdown)
-                                    <li><a href="{{ $dropdown->link }}" target="_blank">{{ $dropdown->title }}</a></li>
+                                    <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
+                                        @if ($dropdown->icon_dropdown)
+                                            <img src="{{ asset('storage/' . $dropdown->icon_dropdown) }}" alt="icon"
+                                                style="width: 28px; height: 28px; object-fit: cover; border-radius: 4px;">
+                                        @endif
+                                        <a href="{{ $dropdown->link }}" target="_blank"
+                                            style="flex: 1;">{{ $dropdown->title }}</a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>

@@ -175,8 +175,8 @@ body {
         backdrop-filter: none;
         background-color: #002b74; /* Ganti dengan warna latar belakang yang sesuai */
         height: auto; /* Sesuaikan tinggi navbar agar responsif */
-        padding-top: 10px; /* Tambahkan padding atas sesuai kebutuhan */
-        padding-bottom: 10px; /* Tambahkan padding bawah sesuai kebutuhan */
+        padding-top: 0.4rem; /* Kurangi padding atas untuk mobile */
+        padding-bottom: 0.4rem; /* Kurangi padding bawah untuk mobile */
     }
 
     .navbar-default.blur,
@@ -189,6 +189,115 @@ body {
             1
         ); /* Ganti dengan warna latar belakang yang sesuai */
         height: auto; /* Sesuaikan tinggi navbar agar responsif */
+    }
+}
+
+/* Additional mobile-only compact navbar tweaks */
+@media (max-width: 991.98px) {
+    /* Override the py-4 utility that was applied in the markup to keep desktop spacing intact */
+    .navbar.py-4 {
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.35rem !important;
+    }
+
+    /* Slightly smaller logo for mobile to reduce navbar height */
+    .navbar .navbar-brand img {
+        height: 48px;
+    }
+
+    /* Make the toggler visually balanced but not large */
+    .navbar-toggler {
+        padding: 0.35rem 0.6rem;
+    }
+
+    /* Ensure fixed navbar doesn't push other elements; keep overlay behavior */
+    .navbar-default,
+    .navbar-index {
+        position: fixed;
+        top: 0;
+    }
+}
+
+/* ======= Offcanvas Mobile Menu Styles ======= */
+.offcanvas-mobile {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 43, 116, 0.98),
+        rgba(4, 46, 107, 0.98)
+    );
+    color: #ffffff;
+}
+
+.offcanvas-mobile .offcanvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.offcanvas-mobile .offcanvas-body {
+    padding: 1rem;
+}
+
+.mobile-nav-link,
+.mobile-sub-link {
+    display: block;
+    color: #ffffff;
+    padding: 0.6rem 0.25rem;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.mobile-nav-link:hover,
+.mobile-sub-link:hover {
+    color: #dbeeff;
+    text-decoration: none;
+}
+
+.mobile-toggle {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    padding: 0.5rem 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobile-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.toggle-icon {
+    transition: transform 0.25s ease;
+}
+
+.collapse.show + .toggle-icon,
+.mobile-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.mobile-admin .btn {
+    padding: 0.6rem 0.75rem;
+}
+
+/* Improve spacing on small screens for navbar brand and social icons */
+@media (max-width: 991.98px) {
+    .navbar .navbar-brand img {
+        height: 50px;
+    }
+
+    .social-icons {
+        display: none !important;
+    }
+
+    /* Make the collapsed desktop collapse hidden on mobile (we use offcanvas)
+       and ensure dropdown menus inside desktop nav don't show on mobile */
+    .navbar-nav .dropdown-menu {
+        display: none !important;
     }
 }
 

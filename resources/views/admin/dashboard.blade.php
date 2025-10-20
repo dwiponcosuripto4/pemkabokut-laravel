@@ -210,97 +210,101 @@
         <div class="row">
             <div class="col-12">
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <div class="card-body">
-                            <h6 class="m-0 font-weight-bold text-primary mb-3">Log Aktivitas</h6>
-                            <!-- Search Form -->
-                            <form method="GET" action="#log-aktivitas" class="mb-3">
-                                <div class="input-group">
-                                    <input type="text" name="search_log" class="form-control"
-                                        placeholder="Cari aktivitas, user, atau jenis..."
-                                        value="{{ request('search_log') }}">
-                                    <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i>
-                                        Cari</button>
-                                </div>
-                            </form>
-                            <div class="table-responsive" style="max-height:400px; overflow-y:auto; overflow-x:auto;">
-                                <table class="table table-bordered mb-0">
-                                    <thead class="text-muted small">
-                                        <tr>
-                                            <th>Tanggal & Waktu</th>
-                                            <th>Aktivitas</th>
-                                            <th>User</th>
-                                            <th>Jenis Aktivitas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $perPage = 10;
-                                            $page = request()->query('page', 1);
-                                            $search = request()->query('search_log');
-                                            $logsQuery = App\Models\LogAktivitas::with('user')->orderByDesc('datetime');
-                                            if ($search) {
-                                                $logsQuery->where(function ($q) use ($search) {
-                                                    $q->where('model', 'like', "%$search%")
-                                                        ->orWhere('title', 'like', "%$search%")
-                                                        ->orWhere('type', 'like', "%$search%")
-                                                        ->orWhereHas('user', function ($uq) use ($search) {
-                                                            $uq->where('name', 'like', "%$search%");
-                                                        });
-                                                });
-                                            }
-                                            $logs = $logsQuery->get();
-                                            $total = $logs->count();
-                                            $logsPage = $logs->slice(($page - 1) * $perPage, $perPage);
-                                        @endphp
-                                        @foreach ($logsPage as $log)
-                                            <tr>
-                                                <td>{{ \Carbon\Carbon::parse($log->datetime)->format('d M Y, H:i') }}</td>
-                                                <td>{{ $log->model }}: {{ $log->title }}</td>
-                                                <td>{{ $log->user ? $log->user->name : '-' }}</td>
-                                                <td>
-                                                    @if ($log->type == 'Create')
-                                                        <span class="badge bg-success">Create</span>
-                                                    @elseif ($log->type == 'Update')
-                                                        <span class="badge bg-warning text-dark">Update</span>
-                                                    @elseif ($log->type == 'Delete')
-                                                        <span class="badge bg-danger">Delete</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Log Aktivitas</h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search Form -->
+                        <form method="GET" action="#log-aktivitas" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" name="search_log" class="form-control"
+                                    placeholder="Cari aktivitas, user, atau jenis..."
+                                    value="{{ request('search_log') }}">
+                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i>
+                                    Cari</button>
                             </div>
+                        </form>
+                        <div class="table-responsive" style="max-height:400px; overflow-y:auto; overflow-x:auto;">
+                            <table class="table table-bordered mb-0">
+                                <thead class="text-muted small">
+                                    <tr>
+                                        <th>Tanggal & Waktu</th>
+                                        <th>Aktivitas</th>
+                                        <th>User</th>
+                                        <th>Jenis Aktivitas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $perPage = 10;
+                                        $page = request()->query('page', 1);
+                                        $search = request()->query('search_log');
+                                        $logsQuery = App\Models\LogAktivitas::with('user')->orderByDesc('datetime');
+                                        if ($search) {
+                                            $logsQuery->where(function ($q) use ($search) {
+                                                $q->where('model', 'like', "%$search%")
+                                                    ->orWhere('title', 'like', "%$search%")
+                                                    ->orWhere('type', 'like', "%$search%")
+                                                    ->orWhereHas('user', function ($uq) use ($search) {
+                                                        $uq->where('name', 'like', "%$search%");
+                                                    });
+                                            });
+                                        }
+                                        $logs = $logsQuery->get();
+                                        $total = $logs->count();
+                                        $logsPage = $logs->slice(($page - 1) * $perPage, $perPage);
+                                    @endphp
+                                    @foreach ($logsPage as $log)
+                                        <tr>
+                                            <td>{{ \Carbon\Carbon::parse($log->datetime)->format('d M Y, H:i') }}</td>
+                                            <td>{{ $log->model }}: {{ $log->title }}</td>
+                                            <td>{{ $log->user ? $log->user->name : '-' }}</td>
+                                            <td>
+                                                @if ($log->type == 'Create')
+                                                    <span class="badge bg-success">Create</span>
+                                                @elseif ($log->type == 'Update')
+                                                    <span class="badge bg-warning text-dark">Update</span>
+                                                @elseif ($log->type == 'Delete')
+                                                    <span class="badge bg-danger">Delete</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        </td>
-                        </tr>
-                        </tbody>
-                        </table>
+
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-end mt-2">
+                        <div class="d-flex justify-content-end mt-3">
                             @php
                                 $lastPage = ceil($total / $perPage);
                             @endphp
-                            <nav>
-                                <ul class="pagination pagination-sm mb-0">
-                                    <li class="page-item {{ $page == 1 ? 'disabled' : '' }}">
-                                        <a class="page-link" href="?page={{ $page - 1 }}">&laquo;</a>
-                                    </li>
-                                    @for ($i = 1; $i <= $lastPage; $i++)
-                                        <li class="page-item {{ $page == $i ? 'active' : '' }}">
+                            @if ($lastPage > 1)
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item {{ $page == 1 ? 'disabled' : '' }}">
                                             <a class="page-link"
-                                                href="?page={{ $i }}">{{ $i }}</a>
+                                                href="?page={{ $page - 1 }}@if (request('search_log')) &search_log={{ request('search_log') }} @endif#log-aktivitas">&laquo;</a>
                                         </li>
-                                    @endfor
-                                    <li class="page-item {{ $page == $lastPage ? 'disabled' : '' }}">
-                                        <a class="page-link" href="?page={{ $page + 1 }}">&raquo;</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                                        @for ($i = 1; $i <= $lastPage; $i++)
+                                            <li class="page-item {{ $page == $i ? 'active' : '' }}">
+                                                <a class="page-link"
+                                                    href="?page={{ $i }}@if (request('search_log')) &search_log={{ request('search_log') }} @endif#log-aktivitas">{{ $i }}</a>
+                                            </li>
+                                        @endfor
+                                        <li class="page-item {{ $page == $lastPage ? 'disabled' : '' }}">
+                                            <a class="page-link"
+                                                href="?page={{ $page + 1 }}@if (request('search_log')) &search_log={{ request('search_log') }} @endif#log-aktivitas">&raquo;</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -317,6 +321,24 @@
 
         .fc-popover-body {
             padding-right: 8px !important;
+        }
+
+        /* Fix pagination width and prevent overflow */
+        .pagination {
+            max-width: 100%;
+            overflow-x: auto;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
+
+        .pagination li {
+            flex: none;
+        }
+
+        /* Make sure pagination stays inside its container */
+        .d-flex.justify-content-end {
+            overflow-x: auto;
+            max-width: 100%;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

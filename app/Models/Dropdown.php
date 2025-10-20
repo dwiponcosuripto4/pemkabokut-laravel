@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Dropdown extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'link', 'icon_id'];
+    protected $fillable = ['title', 'icon_dropdown', 'link', 'icon_id'];
 
     // Hubungan dengan Icon (Many to One)
     public function icon()

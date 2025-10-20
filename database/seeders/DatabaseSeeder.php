@@ -17,11 +17,13 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'pemkabokut@admin.com',
+            'unit' => 'Bidang Infrastruktur Teknologi Informasi',
             'is_verified' => true
         ]);
         User::factory()->create([
             'name' => 'Dwiponco Suripto',
-            'email' => 'dwiponcosuripto01@gmail.com'
+            'email' => 'dwiponcosuripto01@gmail.com',
+            'unit' => 'Bidang Informasi dan Komunikasi Publik'
         ]);
 
         $this->call([

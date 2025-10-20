@@ -17,6 +17,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        // Generate simple math captcha
+        $num1 = rand(1, 10);
+        $num2 = rand(1, 10);
+        $answer = $num1 + $num2;
+        
+        session([
+            'captcha_question' => "$num1 + $num2",
+            'captcha_answer' => $answer
+        ]);
+
         return view('auth.login');
     }
 
@@ -25,9 +35,32 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Validate simple captcha
+        $userAnswer = $request->input('captcha');
+        $correctAnswer = session('captcha_answer');
+        
+        if ($userAnswer != $correctAnswer) {
+            // Generate new captcha for retry
+            $num1 = rand(1, 10);
+            $num2 = rand(1, 10);
+            $answer = $num1 + $num2;
+            
+            session([
+                'captcha_question' => "$num1 + $num2",
+                'captcha_answer' => $answer
+            ]);
+            
+            return back()->withErrors([
+                'captcha' => 'Captcha salah. Silakan coba lagi.'
+            ])->withInput();
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();
+        
+        // Clear captcha from session after successful login
+        session()->forget(['captcha_question', 'captcha_answer']);
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

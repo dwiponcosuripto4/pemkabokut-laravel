@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('dropdowns', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
+            $table->string('icon_dropdown')->nullable();
             $table->string('link')->nullable();
             $table->foreignId('icon_id')->constrained('icons')->onDelete('cascade');
             $table->timestamps();

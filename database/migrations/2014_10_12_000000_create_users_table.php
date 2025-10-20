@@ -16,6 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('foto')->nullable();
+            $table->enum('unit', [
+                'Bidang Informasi dan Komunikasi Publik',
+                'Bidang Pengelolaan Data dan Statistik',
+                'Bidang Persandian dan Keamanan Informasi',
+                'Bidang Infrastruktur Teknologi Informasi',
+                'Sekretariat Diskominfo'
+            ])->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_verified')->default(false);

@@ -59,6 +59,18 @@
                             <input type="url" name="dropdowns[{{ $dropdown->id }}][link]" class="form-control"
                                 value="{{ $dropdown->link }}" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="dropdown_icon_dropdown_{{ $index }}" class="form-label">Dropdown Icon
+                                (Image)</label>
+                            <input type="file" name="dropdowns[{{ $dropdown->id }}][icon_dropdown]" class="form-control"
+                                accept="image/*">
+                            @if ($dropdown->icon_dropdown)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/' . $dropdown->icon_dropdown) }}" alt="icon"
+                                        style="max-width:40px;">
+                                </div>
+                            @endif
+                        </div>
                         <button type="button" class="btn btn-danger btn-sm remove-dropdown"
                             data-dropdown-id="{{ $dropdown->id }}">Delete Dropdown</button>
                     </div>
@@ -88,6 +100,10 @@
                     <div class="mb-3">
                         <label for="dropdown_link_${dropdownIndex}" class="form-label">Dropdown Link</label>
                         <input type="url" name="dropdowns[new_${dropdownIndex}][link]" class="form-control" placeholder="Enter dropdown link" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dropdown_icon_dropdown_${dropdownIndex}" class="form-label">Dropdown Icon (Image)</label>
+                        <input type="file" name="dropdowns[new_${dropdownIndex}][icon_dropdown]" class="form-control" accept="image/*">
                     </div>
                     <button type="button" class="btn btn-danger btn-sm remove-dropdown">Delete Dropdown</button>
                 </div>
