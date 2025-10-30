@@ -192,17 +192,73 @@
 /* Gaya untuk submenu */
 .submenu-collapse {
     position: absolute;
-    width: 784px; /* Lebar yang diinginkan */
-    top: calc(100%); /* Tampilkan submenu tepat di bawah portal title */
-    left: 50%; /* Posisikan submenu di tengah secara horizontal */
-    transform: translateX(-50%); /* Pastikan submenu benar-benar di tengah */
-    background-color: rgb(255, 255, 255); /* Warna background submenu */
+    width: 784px;
+    top: calc(100%);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(255, 255, 255);
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    display: none; /* Tersembunyi secara default */
-    z-index: 10; /* Pastikan muncul di atas elemen lain */
-    margin-top: -20px; /* Menghilangkan jarak tambahan */
+    display: none;
+    z-index: 10;
+    margin-top: -20px;
+}
+
+@media (max-width: 767px) {
+    .submenu-collapse {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90% !important;
+        max-width: 350px !important;
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        z-index: 1001 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .submenu-collapse::before {
+        display: none !important;
+    }
+
+    .submenu-collapse .popup-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #eaeaea;
+        margin-bottom: 0;
+    }
+
+    .submenu-collapse .popup-content {
+        padding: 20px;
+    }
+
+    .submenu-collapse ul {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .submenu-collapse ul li {
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    .submenu-collapse ul li a {
+        display: flex !important;
+        align-items: center !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    .submenu-collapse ul li a:hover {
+        background-color: #f5f5f5 !important;
+    }
 }
 
 /* Styling khusus untuk submenu UMKM */
@@ -693,5 +749,65 @@
         background-color: #28a745;
         box-shadow: 0 0 5px #28a745;
         transform: scale(1);
+    }
+}
+
+/* ======= Welcome / Intro popup sizing (prevent wrapping/pushing) ======= */
+#welcomePopup {
+    font-size: 2.2rem; /* default desktop size */
+    line-height: 1.05;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    margin: 0 10px 8px; /* small margin to separate from form */
+}
+
+#infoPopup {
+    font-size: 1.05rem; /* default desktop size */
+    line-height: 1.2;
+    max-width: 900px; /* constrain width to avoid awkward wrapping */
+    margin: 0 12px 12px;
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+    #welcomePopup {
+        font-size: 1.9rem;
+    }
+    #infoPopup {
+        font-size: 1rem;
+    }
+}
+
+/* Small / tablet */
+@media (max-width: 991px) {
+    #welcomePopup {
+        font-size: 1.6rem;
+    }
+    #infoPopup {
+        font-size: 0.95rem;
+    }
+    .search-form {
+        width: 92%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    #welcomePopup {
+        font-size: 1.4rem;
+        transform: none; /* prevent extra translate effects on small screens */
+        text-align: center;
+        padding: 0 12px;
+    }
+
+    #infoPopup {
+        font-size: 0.9rem;
+        padding: 0 18px;
+    }
+
+    .search-form {
+        width: 90%;
+    }
+    .icon-section {
+        max-width: 92%;
     }
 }
